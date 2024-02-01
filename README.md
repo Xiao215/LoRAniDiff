@@ -22,8 +22,8 @@ To set up the project environment, follow these steps:
 1. **Clone the Repository:**
 
    ```bash
-   git clone git@github.com:Xiao215/ECE324.git
-   cd ECE324
+   git clone git@github.com:Xiao215/Stable-Diffusion.git
+   cd Stable-Diffusion
    ```
 
 2. **Create the Conda Environment:**

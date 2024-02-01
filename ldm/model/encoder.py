@@ -3,6 +3,10 @@ from torch import nn
 from torch.nn import functional as F
 from decoder import VAE_AttentionBlock, VAE_ResidualBlock
 
+
+def Normalize(in_channels):
+    return torch.nn.GroupNorm(num_groups=32, num_channels=in_channels, eps=1e-6, affine=True)
+
 class DownsampleBlock(nn.Module):
     def __init__(self, in_channels: int, stride:int = 2) -> None:
         """This is the downsample block for the Encoder. It will downsample the input by a factor of 2. (W/=2, H/=2)
@@ -77,8 +81,7 @@ class Encoder(nn.Module):
         self.mid.residual_2 = VAE_ResidualBlock(in_ch=block_in, out_ch=block_in, dropout=dropout)
 
         # end
-        self.norm = torch.nn.GroupNorm(
-            num_groups=32, num_channels=block_in, eps=1e-6, affine=True)
+        self.norm = Normalize(block_in)
 
         # We could also try sigmoid below?
         self.activation = torch.nn.SiLU()
