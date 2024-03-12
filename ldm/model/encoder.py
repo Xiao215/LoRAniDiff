@@ -1,129 +1,103 @@
 import torch
 from torch import nn
 from torch.nn import functional as F
-from decoder import VAE_AttentionBlock, VAE_ResidualBlock
+from ldm.model.decoder import VAE_AttentionBlock, VAE_ResidualBlock
 
+class VAE_Encoder(nn.Sequential):
+    def __init__(self):
+        super().__init__(
+            # (Batch_Size, Channel, Height, Width) -> (Batch_Size, 128, Height, Width)
+            nn.Conv2d(3, 128, kernel_size=3, padding=1),
 
-def Normalize(in_channels):
-    return torch.nn.GroupNorm(num_groups=32, num_channels=in_channels, eps=1e-6, affine=True)
+             # (Batch_Size, 128, Height, Width) -> (Batch_Size, 128, Height, Width)
+            VAE_ResidualBlock(128, 128),
 
-class DownsampleBlock(nn.Module):
-    def __init__(self, in_channels: int, stride:int = 2) -> None:
-        """This is the downsample block for the Encoder. It will downsample the input by a factor of 2. (W/=2, H/=2)
+            # (Batch_Size, 128, Height, Width) -> (Batch_Size, 128, Height, Width)
+            VAE_ResidualBlock(128, 128),
 
-        Args:
-            in_channels (int): Number of input channels.
-            out_channels (int): Number of output channels.
-            num_res_blocks (int): Number of residual blocks in the downsample block.
-            use_attention (bool): Whether to use attention.
-        Return:
-        """
+            # (Batch_Size, 128, Height, Width) -> (Batch_Size, 128, Height / 2, Width / 2)
+            nn.Conv2d(128, 128, kernel_size=3, stride=2, padding=0),
 
-        super().__init__()
-        self.in_channels = in_channels
-        # This is the CNN layer to downsample the input.
-        self.conv = nn.Conv2d(in_channels, in_channels, kernel_size=3, stride=2, padding=0)
+            # (Batch_Size, 128, Height / 2, Width / 2) -> (Batch_Size, 256, Height / 2, Width / 2)
+            VAE_ResidualBlock(128, 256),
 
-    def forward(self, x):
-        # Since the stide is 2, a padding will be added to the input.
-        pad = (0, 1, 0, 1)
-        x = F.pad(x, pad, mode="constant", value=0)
+            # (Batch_Size, 256, Height / 2, Width / 2) -> (Batch_Size, 256, Height / 2, Width / 2)
+            VAE_ResidualBlock(256, 256),
 
-class Encoder(nn.Module):
-    def __init__(self, ch: int = 128, ch_mult: tuple[int] = (1, 2, 4, 8), num_res_blocks: int = 2, dropout:float=0.0, in_channels:int = 3, z_channels:int = 4) -> None:
-        """This is the encoder class for the LDM model.
+            # (Batch_Size, 256, Height / 2, Width / 2) -> (Batch_Size, 256, Height / 4, Width / 4)
+            nn.Conv2d(256, 256, kernel_size=3, stride=2, padding=0),
 
-        Args:
-            ch (int): Number of channels in the first layer.
-            ch_mult (tuple[int]): Multiplier for the number of channels in each layer.
-            num_res_blocks (int): Number of residual blocks in each layer/level.
-            dropout (float): Dropout probability.
-            in_channels (int): Number of input channels.
-            z_channels (int): Number of latent channels.
+            # (Batch_Size, 256, Height / 4, Width / 4) -> (Batch_Size, 512, Height / 4, Width / 4)
+            VAE_ResidualBlock(256, 512),
 
-        Return:
-        """
+            # (Batch_Size, 512, Height / 4, Width / 4) -> (Batch_Size, 512, Height / 4, Width / 4)
+            VAE_ResidualBlock(512, 512),
 
-        super().__init__()
-        self.in_channels = in_channels
-        self.z_channels = z_channels
-        self.ch = ch
-        self.ch_mult = ch_mult
-        self.num_res_blocks = num_res_blocks
-        self.dropout = dropout
+            # (Batch_Size, 512, Height / 4, Width / 4) -> (Batch_Size, 512, Height / 8, Width / 8)
+            nn.Conv2d(512, 512, kernel_size=3, stride=2, padding=0),
 
-        # downsampling
-        self.conv_in = torch.nn.Conv2d(self.in_channels, self.ch, kernel_size=3, stride=1, padding=1)
+            # (Batch_Size, 512, Height / 8, Width / 8) -> (Batch_Size, 512, Height / 8, Width / 8)
+            VAE_ResidualBlock(512, 512),
 
-        # in channel multiplier
-        in_ch_mult = (1,)+tuple(ch_mult)
-        self.down = nn.ModuleList()
+            # (Batch_Size, 512, Height / 8, Width / 8) -> (Batch_Size, 512, Height / 8, Width / 8)
+            VAE_ResidualBlock(512, 512),
 
-        block_in = None
-        block_out = None
-        for level_idx in range(len(ch_mult)):
-            down = nn.Module()
-            block_in = ch*in_ch_mult[level_idx]
-            block_out = ch*ch_mult[level_idx]
+            # (Batch_Size, 512, Height / 8, Width / 8) -> (Batch_Size, 512, Height / 8, Width / 8)
+            VAE_ResidualBlock(512, 512),
 
-            # Add a downsample block to the list.
-            down.downsample(DownsampleBlock(block_in, stride=2))
-            residualBlock = nn.ModuleList()
-            for _ in range(num_res_blocks):
-                residualBlock.append(VAE_ResidualBlock(in_ch=block_in, out_ch=block_out, dropout=dropout))
-                block_in = block_out
-            down.residualBlock = residualBlock
+            # (Batch_Size, 512, Height / 8, Width / 8) -> (Batch_Size, 512, Height / 8, Width / 8)
+            VAE_AttentionBlock(512),
 
-        # middle
-        self.mid = nn.Module()
-        self.mid.residual_1 = VAE_ResidualBlock(in_ch=block_in, out_ch=block_in, dropout=dropout)
-        self.mid.attention = VAE_AttentionBlock(in_ch=block_in)
-        self.mid.residual_2 = VAE_ResidualBlock(in_ch=block_in, out_ch=block_in, dropout=dropout)
+            # (Batch_Size, 512, Height / 8, Width / 8) -> (Batch_Size, 512, Height / 8, Width / 8)
+            VAE_ResidualBlock(512, 512),
 
-        # end
-        self.norm = Normalize(block_in)
+            # (Batch_Size, 512, Height / 8, Width / 8) -> (Batch_Size, 512, Height / 8, Width / 8)
+            nn.GroupNorm(32, 512),
 
-        # We could also try sigmoid below?
-        self.activation = torch.nn.SiLU()
-        self.conv_out = torch.nn.Conv2d(block_in, 2*self.z_channels, kernel_size=3, stride=1, padding=1)
-        self.quant_cov = torch.nn.Conv2d(
-            2*self.z_channels, 2*self.z_channels, kernel_size=1)
+            # (Batch_Size, 512, Height / 8, Width / 8) -> (Batch_Size, 512, Height / 8, Width / 8)
+            nn.SiLU(),
 
-    def forward(self, x: torch.Tensor, noise: torch.Tensor) -> torch.Tensor:
-        """This is the forward function for the encoder.
+            # Because the padding=1, it means the width and height will increase by 2
+            # Out_Height = In_Height + Padding_Top + Padding_Bottom
+            # Out_Width = In_Width + Padding_Left + Padding_Right
+            # Since padding = 1 means Padding_Top = Padding_Bottom = Padding_Left = Padding_Right = 1,
+            # Since the Out_Width = In_Width + 2 (same for Out_Height), it will compensate for the Kernel size of 3
+            # (Batch_Size, 512, Height / 8, Width / 8) -> (Batch_Size, 8, Height / 8, Width / 8).
+            nn.Conv2d(512, 8, kernel_size=3, padding=1),
 
-        argument:
-            x (torch.Tensor): Input image tensor, (Batch_Size, Channel, Height, Width).
-            noise (torch.Tensor): Noise tensor in the latent space, (Batch_Size, z-channels, Compressed_Height, Compressed__Width).
-        return:
-            x (torch.Tensor): Output distribution.
-        """
+            # (Batch_Size, 8, Height / 8, Width / 8) -> (Batch_Size, 8, Height / 8, Width / 8)
+            nn.Conv2d(8, 8, kernel_size=1, padding=0),
+        )
 
-        # downsampling
-        x = self.conv_in(x)
-        for down in self.down:
-            x = down(x)
-        # middle
-        x = self.mid.residual_1(x)
-        x = self.mid.attention(x)
-        x = self.mid.residual_2(x)
-        # end
-        x = self.norm(x)
-        x = self.activation(x)
-        x = self.conv_out(x)
-        x = self.quant_cov(x)
+    def forward(self, x, noise):
+        # x: (Batch_Size, Channel, Height, Width)
+        # noise: (Batch_Size, 4, Height / 8, Width / 8)
 
-        # Extract the mean and log variance from the output.
-        mean, log_var = x.chunk(2, dim=1)
-        # Bound the log variance to prevent numerical instability.
-        log_var = torch.clamp(log_var, -30, 20)
-        var = log_var.exp()
-        stdev = var.sqrt()
+        for module in self:
 
-        # Compute the modified Gaussian distribution.
+            if getattr(module, 'stride', None) == (2, 2):  # Padding at downsampling should be asymmetric (see #8)
+                # Pad: (Padding_Left, Padding_Right, Padding_Top, Padding_Bottom).
+                # Pad with zeros on the right and bottom.
+                # (Batch_Size, Channel, Height, Width) -> (Batch_Size, Channel, Height + Padding_Top + Padding_Bottom, Width + Padding_Left + Padding_Right) = (Batch_Size, Channel, Height + 1, Width + 1)
+                x = F.pad(x, (0, 1, 0, 1))
+
+            x = module(x)
+        # (Batch_Size, 8, Height / 8, Width / 8) -> two tensors of shape (Batch_Size, 4, Height / 8, Width / 8)
+        mean, log_variance = torch.chunk(x, 2, dim=1)
+        # Clamp the log variance between -30 and 20, so that the variance is between (circa) 1e-14 and 1e8.
+        # (Batch_Size, 4, Height / 8, Width / 8) -> (Batch_Size, 4, Height / 8, Width / 8)
+        log_variance = torch.clamp(log_variance, -30, 20)
+        # (Batch_Size, 4, Height / 8, Width / 8) -> (Batch_Size, 4, Height / 8, Width / 8)
+        variance = log_variance.exp()
+        # (Batch_Size, 4, Height / 8, Width / 8) -> (Batch_Size, 4, Height / 8, Width / 8)
+        stdev = variance.sqrt()
+
+        # Transform N(0, 1) -> N(mean, stdev)
+        # (Batch_Size, 4, Height / 8, Width / 8) -> (Batch_Size, 4, Height / 8, Width / 8)
         x = mean + stdev * noise
 
-        # scale x by a constant
-        # constant taken from: https://github.com/CompVis/stable-diffusion/blob/21f890f9da3cfbeaba8e2ac3c425ee9e998d5229/configs/stable-diffusion/v1-inference.yaml#L17C1-L17C1
+        # Scale by a constant
+        # Constant taken from: https://github.com/CompVis/stable-diffusion/blob/21f890f9da3cfbeaba8e2ac3c425ee9e998d5229/configs/stable-diffusion/v1-inference.yaml#L17C1-L17C1
         x *= 0.18215
+
         return x
