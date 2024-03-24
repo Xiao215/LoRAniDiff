@@ -21,7 +21,6 @@ learning_rate = 1e-4
 batch_size = 16
 epochs = 10
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
-ckpt_path = os.path.join(os.pardir, "path_to_your_checkpoint.pth")
 alpha = 0.5  # Weight between reconstruction and CLIP-guided losses
 n_inference_steps=50
 
@@ -58,6 +57,8 @@ class TextCapsDataset(Dataset):
         img_path = self.metadata_df.iloc[idx]['image_path']
         image = Image.open(img_path).convert('RGB')
         caption = self.metadata_df.iloc[idx]['caption']
+        print(f'caption: {caption}')
+        print(f'image: {image.size}')
 
         if self.transform:
             image = self.transform(image)
@@ -72,12 +73,13 @@ transform = transforms.Compose([
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 parquet_path = os.path.join(BASE_DIR, 'data/textcaps/metadata.parquet')
 dataset = TextCapsDataset(parquet_path, transform=transform)
+# dataset = {'image': dataset['image'][:10], 'caption': dataset['caption'][:10]}
 train_size = int(0.8 * len(dataset))
 val_size = len(dataset) - train_size
 train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
 # Use DataLoader to handle batching
-train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True, num_workers=4)
-val_loader = DataLoader(val_dataset, batch_size=4, shuffle=False, num_workers=4)
+train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=4)
+val_loader = DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=4)
 
 model = StableDiffusion(device, model_file=model_file).to(device)
 
@@ -102,15 +104,22 @@ accumulation_steps = 4
 for epoch in range(epochs):
     model.train()  # Set model to training mode
     for i, batch in enumerate(tqdm(train_loader)):
+        print(f'iter: {i}')
         images = batch['image'].to(device)
         captions = batch['caption']
+        print(f'images: {images.size()}')
+        print(f'captions: {captions}')
         generated_images, text_embeddings = model(images, captions, tokenizer)
-        loss = model.compute_loss(generated_images, images, text_embeddings)
-        loss.backward()
-        if (i + 1) % accumulation_steps == 0:
-            optimizer.step()  # Update weights
-            optimizer.zero_grad()
+        break
+    break
+    #     print(f'generated_images: {generated_images.size()}')
 
-    # Evaluation after each epoch
-    val_loss = evaluate_model(model, val_loader, device)
-    print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}, Validation Loss: {val_loss:.4f}')
+    #     loss = model.compute_loss(generated_images, images, text_embeddings)
+    #     loss.backward()
+    #     if (i + 1) % accumulation_steps == 0:
+    #         optimizer.step()  # Update weights
+    #         optimizer.zero_grad()
+
+    # # Evaluation after each epoch
+    # val_loss = evaluate_model(model, val_loader, device)
+    # print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}, Validation Loss: {val_loss:.4f}')
