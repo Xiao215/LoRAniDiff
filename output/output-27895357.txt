@@ -1,0 +1,120 @@
+/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/fastparquet/dataframe.py:233: FutureWarning: is_categorical_dtype is deprecated and will be removed in a future version. Use isinstance(dtype, CategoricalDtype) instead
+  if is_categorical_dtype(dtype):
+Training...
+  0%|          | 0/197 [00:00<?, ?it/s]caption: A pink ribbon from the 2009 Minnesota State Fair, hangs next to a piece of art.
+image: (256, 256)
+caption: A 1943 poster from the film Swing Shift Maisie is displayed with bold red and black lettering.
+image: (256, 256)
+caption: A gallon of red insulation adhesive in a white can with red lettering.
+image: (256, 256)
+caption: Imperial Chocolate Stout is best served in a Guinness glass.
+image: (256, 256)
+caption: Highway 215 heading south, with 1300 East off to the right.
+image: (256, 256)
+caption: runner with red jersey that has espana on it and tag that has martin 52 and year 2014
+image: (256, 256)
+caption: Horror dice game titled "Ancient Terrible Things" on top of a table.
+image: (256, 256)
+caption: two wine bottles branded with a JOIE logo
+image: (256, 256)
+caption: A shelf talker with a red star advertises Utopian Visions books.
+image: (256, 256)
+caption: bicycle diagram with various lengths of parts such as wheelbase
+image: (256, 256)
+caption: Black bottle with a label that says Sunturnbrew on it.
+image: (256, 256)
+caption: Three Sony mobile phones, one red one black one white,  sit one on top the other but fanned out so the reverse of all three is visible.
+image: (256, 256)
+caption: A glass of beer has the words SINGHA BEER imprinted on it.
+image: (256, 256)
+caption: a sign on the side of a hill titled Mt. Rodney RV Park
+image: (256, 256)
+caption: black and white bus with felix private above windshield and license plate of dbu 889
+image: (256, 256)
+caption: A man is covering his mouth with his hand and a poster that says BCR is behind him.
+image: (256, 256)
+caption: an AIRFRANCE airplane on a landing strip with the landing gear out.
+image: (256, 256)
+caption: A baseball player wearing the number 57 is peering over a fence.
+image: (256, 256)
+caption: Black garbage can which says "Park Litter Only" on it.
+image: (256, 256)
+caption: Hand written Beer special $4.00 shots on the side of a blue shingled roof.
+image: (256, 256)
+caption: a license platr with the letter L at the start
+image: (256, 256)
+caption: Three older men are posing for a picture with the man in the middle wearing a RANGERS shirt.
+image: (256, 256)
+caption: A young man wearing the brand Supreme on a black cap.
+image: (256, 256)
+caption: A Ford company truck for Proweld welding supplies.
+image: (256, 256)
+caption: The book Night-watch has pictures of space ships on the cover.
+image: (256, 256)
+caption: A General Electric advertisement about a stove priced at $149.00..
+image: (256, 256)
+caption: A baseball game is being played with a bunch of advertisements in the background such as Coca-Cola.
+image: (256, 256)
+caption: The Ford  Meade athlete shows us his medal which is around his neck.
+image: (256, 256)
+caption: A movie screen that says experience& empathize on it.
+image: (256, 256)
+caption: The word nine is at the top of a printed page.
+image: (256, 256)
+caption: Four people look off into the distance on a movie poster for Segreti di Famiglia.
+image: (256, 256)
+caption: Grocery cart full of bags of chips with Doritos in white lettering.
+image: (256, 256)
+caption: A bottle of champagne with two glasses with the words celebrate on the bottom of the screen
+image: (256, 256)
+caption: A man wearing a bicycle helmet has a back pack with "I hate" brochures stuffed into the side.
+image: (256, 256)
+caption: a box that days Sony PSP PlayStationPortable, the item is in Piano Black.
+image: (256, 256)
+caption: Today is the 28th according to my new watch.
+image: (256, 256)
+  0%|          | 0/197 [00:10<?, ?it/s]
+iter: 0
+images: torch.Size([4, 3, 256, 256])
+captions: ['A pink ribbon from the 2009 Minnesota State Fair, hangs next to a piece of art.', 'A 1943 poster from the film Swing Shift Maisie is displayed with bold red and black lettering.', 'A gallon of red insulation adhesive in a white can with red lettering.', 'Imperial Chocolate Stout is best served in a Guinness glass.']
+Traceback (most recent call last):
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/train.py", line 117, in <module>
+    generated_images, text_embeddings = model(images, captions, tokenizer)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/ldm.py", line 61, in forward
+    model_output = self.diffusion(model_input, context, time_embedding)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/model/diffusion.py", line 343, in forward
+    output = self.unet(latent, context, time)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/model/diffusion.py", line 293, in forward
+    x = layers(x, context, time)
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/model/diffusion.py", line 189, in forward
+    x = layer(x, context)
+        ^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/model/diffusion.py", line 125, in forward
+    x = self.attention_1(x)
+        ^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/module/attention.py", line 53, in forward
+    output = weight @ v
+             ~~~~~~~^~~
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB (GPU 0; 31.74 GiB total capacity; 31.13 GiB already allocated; 7.62 MiB free; 31.19 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF

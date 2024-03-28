@@ -10,12 +10,12 @@ from ldm.module.ddpm import DDPMSampler
 
 
 class StableDiffusion(nn.Module):
-    def __init__(self, device, alpha=0.5, model_file=None, n_inference_steps=50, seed=None):
+    def __init__(self, device, alpha=0.5, model_file=None, n_inference_steps=50, seed=None, width=256, height=256):
         super(StableDiffusion, self).__init__()
         self.alpha = alpha
         self.device = device
-        self.HEIGHT = 512
-        self.WIDTH = 512
+        self.HEIGHT = height
+        self.WIDTH = width
         self.LATENTS_WIDTH = self.WIDTH // 8
         self.LATENTS_HEIGHT = self.HEIGHT // 8
         self.n_inference_steps = n_inference_steps

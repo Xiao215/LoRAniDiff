@@ -1,0 +1,120 @@
+/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/fastparquet/dataframe.py:233: FutureWarning: is_categorical_dtype is deprecated and will be removed in a future version. Use isinstance(dtype, CategoricalDtype) instead
+  if is_categorical_dtype(dtype):
+Training...
+  0%|          | 0/197 [00:00<?, ?it/s]caption: A white Plymouth government van parked on a suburban street.
+image: (512, 512)
+caption: A sign for the Semua House hangs on a bright orange building.
+image: (512, 512)
+caption: Phone screen with the Facebook app on the lower left.
+image: (512, 512)
+caption: A box with a label reading 100% raw chocolate with the words lovechock happiness inside printed on the box.
+image: (512, 512)
+caption: Baseball player for the Ray's stand allow in the outfield.
+image: (512, 512)
+caption: Budweiser is sponsoring the baseball that is being played on the field.
+image: (512, 512)
+caption: Someone crossed off the word 'stop' on a stop sign and wrote the word 'go' underneath it.
+image: (512, 512)
+caption: a mural that says 'young gifted and broke'
+image: (512, 512)
+caption: A blonde woman stands at a pedetal speaking in front of a banner proclaiming an Affiliate Summit.
+image: (512, 512)
+caption: Two men pose in front of a poster for the European Club Cup.
+image: (512, 512)
+caption: A coin from 2003 that has a value of two pounds.
+image: (512, 512)
+caption: A wall display includes a promotion for Bazar Magazine at a discount.
+image: (512, 512)
+caption: A row of pink taxis are in front of a palace and a pink sign says Fashion Shows, Pop Up Stories, and Conferences.
+image: (512, 512)
+caption: A six-pack of Shiner Bock has one bottle missing.
+image: (512, 512)
+caption: A man in an orange Spalding tank top is taking a selfie.
+image: (512, 512)
+caption: Buttons of a keyboard where you can see the letters Q, W, E, A and S.
+image: (512, 512)
+caption: 2 glass bottles of Carnage next to a glass
+image: (512, 512)
+caption: Cheerleaders with California on the band of their skirts are making a pyramid.
+image: (512, 512)
+caption: A sign for a one hour dry cleaning business.
+image: (512, 512)
+caption: A glass of Tiger Lager with an empty bottle sits on a ledge.
+image: (512, 512)
+caption: A magazine centerfold is open displaying a colorful cartoon called Joe's Dope Sheet.
+image: (512, 512)
+caption: A display for Tugaboos Diapers priced at 99 cents each
+image: (512, 512)
+caption: Coins are lying on a table with an alarm clock set to station 89.6 and shows the temp at 41 degrees
+image: (512, 512)
+caption: A Nicholas Sparks book sits on top of a book called Images of Marilyn
+image: (512, 512)
+caption: The image of a man and woman was presented by flickr.com.
+image: (512, 512)
+caption: A samsung brand phone shows the current time is 11:19.
+image: (512, 512)
+caption: A bottle of Jägermeister is on a wooden table with some playing cards.
+image: (512, 512)
+caption: A tall can of Deviant Dale's India Pale Ale is sitting on a counter top..
+image: (512, 512)
+caption: Three books on the table and the author of the blue one is Eric Ries.
+image: (512, 512)
+caption: the numbers 1 thru 12 are on a clock
+image: (512, 512)
+caption: A Telechrom clock shows the time at "10:11".
+image: (512, 512)
+caption: A few pringles containers show Limited Time Only on the top by the lid
+image: (512, 512)
+caption: A screen showing footage of a show called skinbit with a box with the same logo behind the monitor.
+image: (512, 512)
+caption: a huge white business with Chinese readings on them
+image: (512, 512)
+caption: An opened pack of Silk Fruit & Protein with a pair of scissors beside it.
+image: (512, 512)
+caption: Little girl is reading a book about meet Josefina
+image: (512, 512)
+  0%|          | 0/197 [00:05<?, ?it/s]
+iter: 0
+images: torch.Size([4, 3, 512, 512])
+captions: ['A white Plymouth government van parked on a suburban street.', 'A sign for the Semua House hangs on a bright orange building.', 'Phone screen with the Facebook app on the lower left.', 'A box with a label reading 100% raw chocolate with the words lovechock happiness inside printed on the box.']
+Traceback (most recent call last):
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/train.py", line 112, in <module>
+    generated_images, text_embeddings = model(images, captions, tokenizer)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/ldm.py", line 61, in forward
+    model_output = self.diffusion(model_input, context, time_embedding)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/model/diffusion.py", line 343, in forward
+    output = self.unet(latent, context, time)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/model/diffusion.py", line 301, in forward
+    x = layers(x, context, time)
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/model/diffusion.py", line 189, in forward
+    x = layer(x, context)
+        ^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/model/diffusion.py", line 125, in forward
+    x = self.attention_1(x)
+        ^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/module/attention.py", line 37, in forward
+    weight = q @ k.transpose(-1, -2)
+             ~~^~~~~~~~~~~~~~~~~~~~~
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.00 GiB (GPU 0; 31.74 GiB total capacity; 29.09 GiB already allocated; 865.62 MiB free; 30.36 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF

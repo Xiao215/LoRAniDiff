@@ -1,0 +1,96 @@
+/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/fastparquet/dataframe.py:233: FutureWarning: is_categorical_dtype is deprecated and will be removed in a future version. Use isinstance(dtype, CategoricalDtype) instead
+  if is_categorical_dtype(dtype):
+Training...
+  0%|          | 0/197 [00:00<?, ?it/s]caption: An LG television that is turned off with a white background
+image: (256, 256)
+caption: A group of people are taking a balloon ride from Portland Rose Balloons.com.
+image: (256, 256)
+caption: A bottle of Brewdog lager has a yellow label with black writing.
+image: (256, 256)
+caption: a cardboard box with a label from  mercedes address to bunklbgte medpaerefatning
+image: (256, 256)
+caption: Cans of Fresca soda are arranged on a white surface.
+image: (256, 256)
+caption: A wall clock with Roman Numerals for the numbered hours shows the time as 2:02.
+image: (256, 256)
+caption: A busy poster for a party in March featuring a number of acts from 2012.
+image: (256, 256)
+caption: The contents of a refrigerator door contains Minute Maid lemonade and Heinz Ketchup.
+image: (256, 256)
+caption: Two baseball players approach each other to high five in front of an Aquifina sign.
+image: (256, 256)
+caption: honda from bay ridge honda with new york tags HTTPS
+image: (256, 256)
+caption: 11 is a Par 5 marks this golf hole according to the sign.
+image: (256, 256)
+caption: Bottles with the brand name Epic are lined up.
+image: (256, 256)
+caption: the store front gor h.brckman and sons hardware
+image: (256, 256)
+caption: A Sobe energy drink is being held up in someone's hand.
+image: (256, 256)
+caption: a toyota show car with the logo on the back windshield.
+image: (256, 256)
+caption: Aleph book by author Paulo Coelho with a yellow Aqui empieza tu nueva vida sign.
+image: (256, 256)
+caption: Here somepne hlds the back of a watch that says Escapement Seamester and Axial 0602 is also visible.
+image: (256, 256)
+caption: A bottle of Langhorne Creek Cabernet Merlot organic wine next to a bronze statue.
+image: (256, 256)
+caption: Several boxes of Dunkin Donuts lie on the counter.
+image: (256, 256)
+caption: the word Pulparindo is on a piece of candy
+image: (256, 256)
+caption: a page on a counter that says 'afge 2013' on it
+image: (256, 256)
+caption: Planning Ahead device that has apps and data that is stored.
+image: (256, 256)
+caption: A very blurry picture of an latvijas republika 2008 coin
+image: (256, 256)
+caption: a flag that says the United States on it
+image: (256, 256)
+caption: A bottle of Kirkland brand margarita mix sits near a bottle of Cointreau.
+image: (256, 256)
+caption: Partial sign meant  for  cyclists says use and then we can't see on a sunny day
+image: (256, 256)
+caption: A bottle of sweet vanilla stout sits next to a full glass on a wooden table.
+image: (256, 256)
+caption: A silver police car that says Albuquerque Police is parked in front of a tan house.
+image: (256, 256)
+caption: a box for Nikkor Lens has a pretty red bow on the front
+image: (256, 256)
+caption: White and Black arco midsize delivery volks wagon van
+image: (256, 256)
+caption: Sign on a pole that reads "A New Vision for the Future".
+image: (256, 256)
+caption: A speaker is at a podium with Flyleaf Books written on it.
+image: (256, 256)
+caption: A PICTURE OF A RED BRIDGE OVER WATER WITH A PSALM SAYING
+image: (256, 256)
+caption: The Ekimise building has a banner with the number 400 on it.
+image: (256, 256)
+caption: iPhone 5C placed on top of the box on top of a table.
+image: (256, 256)
+caption: An old clock with the hour hand pointing at XI
+image: (256, 256)
+  0%|          | 0/197 [00:03<?, ?it/s]
+iter: 0
+images: torch.Size([4, 3, 256, 256])
+captions: ['Here somepne hlds the back of a watch that says Escapement Seamester and Axial 0602 is also visible.', 'A bottle of Langhorne Creek Cabernet Merlot organic wine next to a bronze statue.', 'Several boxes of Dunkin Donuts lie on the counter.', 'the word Pulparindo is on a piece of candy']
+Traceback (most recent call last):
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/train.py", line 112, in <module>
+    generated_images, text_embeddings = model(images, captions, tokenizer)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/ldm.py", line 51, in forward
+    latents = self.encoder(images, encoder_noise)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/model/encoder.py", line 97, in forward
+    x = mean + stdev * noise
+               ~~~~~~^~~~~~~
+RuntimeError: The size of tensor a (32) must match the size of tensor b (64) at non-singleton dimension 3

@@ -81,7 +81,13 @@ train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
 train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=4)
 val_loader = DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=4)
 
-model = StableDiffusion(device, model_file=model_file).to(device)
+model = StableDiffusion(device).to(device)
+print(f'Number of GPU is: {torch.cuda.device_count()}')
+if torch.cuda.device_count() > 1:
+  print(f"Let's use {torch.cuda.device_count()} GPUs!")
+  model = torch.nn.DataParallel(model)
+model.to(device)
+
 
 optimizer = Adam(model.parameters(), lr=learning_rate)
 
@@ -110,16 +116,14 @@ for epoch in range(epochs):
         print(f'images: {images.size()}')
         print(f'captions: {captions}')
         generated_images, text_embeddings = model(images, captions, tokenizer)
-        break
-    break
-    #     print(f'generated_images: {generated_images.size()}')
+        print(f'generated_images: {generated_images.size()}')
 
-    #     loss = model.compute_loss(generated_images, images, text_embeddings)
-    #     loss.backward()
-    #     if (i + 1) % accumulation_steps == 0:
-    #         optimizer.step()  # Update weights
-    #         optimizer.zero_grad()
+        loss = model.compute_loss(generated_images, images, text_embeddings)
+        loss.backward()
+        if (i + 1) % accumulation_steps == 0:
+            optimizer.step()  # Update weights
+            optimizer.zero_grad()
 
-    # # Evaluation after each epoch
-    # val_loss = evaluate_model(model, val_loader, device)
-    # print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}, Validation Loss: {val_loss:.4f}')
+    # Evaluation after each epoch
+    val_loss = evaluate_model(model, val_loader, device)
+    print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}, Validation Loss: {val_loss:.4f}')

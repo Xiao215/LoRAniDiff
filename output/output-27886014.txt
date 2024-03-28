@@ -1,0 +1,120 @@
+/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/fastparquet/dataframe.py:233: FutureWarning: is_categorical_dtype is deprecated and will be removed in a future version. Use isinstance(dtype, CategoricalDtype) instead
+  if is_categorical_dtype(dtype):
+Training...
+  0%|          | 0/197 [00:00<?, ?it/s]caption: A baseball player in the outfield is waiting to catch a ball by a Federal Credit sign.
+image: (256, 256)
+caption: The black watch has writing on the bottom that says Aquatimer
+image: (256, 256)
+caption: The home Page for the IsopixelOne internet website.
+image: (256, 256)
+caption: A HARD COVERED BOOK CALLED DE JONGE BEETHOVEN
+image: (256, 256)
+caption: A copy of the book Wuthering Heights by Emily Bronte
+image: (256, 256)
+caption: a sign on a window that says 'hey kids!' on it
+image: (256, 256)
+caption: The stop sign is for bikers and then a sign shows where the bikers to go.
+image: (256, 256)
+caption: cheerleaders wearing uniforms that say 'Falcons' on them
+image: (256, 256)
+caption: Robert Aickman wrote a book called Cold Hand in Mind that was published by Tartarus press
+image: (256, 256)
+caption: a plate with a spoon, pile of sugar, and Pepsi can
+image: (256, 256)
+caption: "The Magic Red Carpet" is displayed on the side of a docked plane.
+image: (256, 256)
+caption: A PICTURE OF A RED BRIDGE OVER WATER WITH A PSALM SAYING
+image: (256, 256)
+caption: Open book next to some other books including one titled "Neopop".
+image: (256, 256)
+caption: A movie poster for the 1970's classic movie "Close Encounters of the Third Kind".
+image: (256, 256)
+caption: A black item sits next to a ruler showing numbers 1 through 9 on an orange surface.
+image: (256, 256)
+caption: An electronic metro sign that says "YL 6 Ft. Tottn 4"
+image: (256, 256)
+caption: A large AT&T billboard that says More bars in more places.
+image: (256, 256)
+caption: A docomo flip phone lies open on a laptop.
+image: (256, 256)
+caption: Automobile care and maintenance supplies are available at Sears.
+image: (256, 256)
+caption: A silver police car that says Albuquerque Police is parked in front of a tan house.
+image: (256, 256)
+caption: Two signs at a beach that says no bycicles and no camels & horses.
+image: (256, 256)
+caption: The cover for the film Shaun of the dead.
+image: (256, 256)
+caption: Three books sitting in the science fiction section.
+image: (256, 256)
+caption: A man stands in front of a poster titled The Role of Social Categorization.
+image: (256, 256)
+caption: a pink bottle of red liquid named mahmoud
+image: (256, 256)
+caption: A bottle of champagne with two glasses with the words celebrate on the bottom of the screen
+image: (256, 256)
+caption: Poster that says "COlabos & Rarezas" with a black background.
+image: (256, 256)
+caption: A girl is standing in a stadium with a shirt on that has a Brewers logo on it.
+image: (256, 256)
+caption: An article that is entitled Beheading a Gargoyle.
+image: (256, 256)
+caption: a remote that is black and has the name 'function' on one of the buttons
+image: (256, 256)
+caption: An open laptop with a game on the screen showing 10 x 2 at the top of the screen .
+image: (256, 256)
+caption: A yellow sign for Tower Grove Avenue hangs over the street near a traffic light.
+image: (256, 256)
+caption: an old fashioner keyboard labels number 64 in tan with black numbers
+image: (256, 256)
+caption: A tape measure measures the right end of an object at about 80 inches.
+image: (256, 256)
+caption: a NASDAQ sign that is located outside in day
+image: (256, 256)
+caption: A book Called American Tragedy by David Kaiser showing the front and back side of the book.
+image: (256, 256)
+  0%|          | 0/197 [00:16<?, ?it/s]
+iter: 0
+images: torch.Size([4, 3, 256, 256])
+captions: ['A baseball player in the outfield is waiting to catch a ball by a Federal Credit sign.', 'The black watch has writing on the bottom that says Aquatimer', 'The home Page for the IsopixelOne internet website.', 'A HARD COVERED BOOK CALLED DE JONGE BEETHOVEN']
+Traceback (most recent call last):
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/train.py", line 112, in <module>
+    generated_images, text_embeddings = model(images, captions, tokenizer)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/ldm.py", line 61, in forward
+    model_output = self.diffusion(model_input, context, time_embedding)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/model/diffusion.py", line 343, in forward
+    output = self.unet(latent, context, time)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/model/diffusion.py", line 293, in forward
+    x = layers(x, context, time)
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/model/diffusion.py", line 189, in forward
+    x = layer(x, context)
+        ^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/model/diffusion.py", line 125, in forward
+    x = self.attention_1(x)
+        ^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/venv/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/jiajing8/ece324/Stable-Diffusion/ldm/module/attention.py", line 53, in forward
+    output = weight @ v
+             ~~~~~~~^~~
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB (GPU 0; 31.74 GiB total capacity; 31.13 GiB already allocated; 5.62 MiB free; 31.19 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF

@@ -9,7 +9,7 @@ files_to_download = [
 ]
 
 # Base directory where you want to save the files
-base_directory = '/h/u6/c4/05/zha11021/CSC413/Stable-Diffusion/model_weight/'
+base_directory = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'model_weight')
 
 # Ensure the base directory exists, if not, create it
 if not os.path.exists(base_directory):

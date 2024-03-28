@@ -60,7 +60,7 @@ output_image = pipeline.generate(
 # Combine the input image and the output image into a single image.
 image = Image.fromarray(output_image)
 
-save_path = Path("/h/u6/c4/05/zha11021/CSC413/Stable-Diffusion/image/output.jpg")
+save_path = Path("image/output.jpg")
 
 image.save(save_path)
 
