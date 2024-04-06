@@ -5,7 +5,7 @@ import os
 files_to_download = [
     ('https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/tokenizer/merges.txt?download=true', 'merges.txt'),
     ('https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/tokenizer/vocab.json?download=true', 'vocab.json'),
-    ('https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt?download=true', 'v1-5-pruned-emaonly.ckpt')
+    ('https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt?download=true', 'v1-5-pruned-emaonly.ckpt'),
     ('https://huggingface.co/Xiao215/LoRAniDiff/resolve/main/LoRAniDiff.pt?download=true', 'LoRAniDiff.pt')
 ]
 
