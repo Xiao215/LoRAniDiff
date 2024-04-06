@@ -9,7 +9,7 @@ zip_url = "https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip"
 # Paths for saving files
 json_file = "metadata.json"
 zip_file = "images.zip"
-target_data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'data/textcaps')
+target_data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), 'data/textcaps')
 
 # Ensure the target directory exists, create if it does not
 os.makedirs(target_data_dir, exist_ok=True)

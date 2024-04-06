@@ -6,7 +6,7 @@ from tqdm import tqdm
 import random
 import shutil
 # Paths
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 IMAGE_DIR = os.path.join(BASE_DIR, 'data/textcaps/train')
 METADATA_PATH = os.path.join(BASE_DIR, 'data/textcaps/metadata.json')
 OUTPUT_DIR = os.path.join(BASE_DIR, 'data/textcaps/processed')
