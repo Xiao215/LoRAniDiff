@@ -15,7 +15,7 @@ print(f"Using device: {DEVICE}")
 
 tokenizer = CLIPTokenizer("model_weight/vocab.json", merges_file="model_weight/merges.txt")
 model_file = "model_weight/v1-5-pruned-emaonly.ckpt"
-pt_file = "model_weight/LoRAniDiff_final_model.pt"
+pt_file = "model_weight/LoRAniDiff.pt"
 
 
 # prompt = "A dog with sunglasses, wearing comfy hat, looking at camera, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution."

@@ -32,7 +32,7 @@ generator.manual_seed(seed)
 # Load pre-initialized models
 tokenizer = CLIPTokenizer("model_weight/vocab.json", merges_file="model_weight/merges.txt")
 model_file = "model_weight/v1-5-pruned-emaonly.ckpt"
-pt_file = "model_weight/LoRAniDiff_final_model.pt"
+pt_file = "model_weight/LoRAniDiff.pt"
 
 
 # Prepare dataset
