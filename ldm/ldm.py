@@ -7,11 +7,12 @@ from ldm.model.encoder import VAE_Encoder
 from ldm.model.decoder import VAE_Decoder
 from ldm.model.diffusion import Diffusion
 from ldm.module.ddpm import DDPMSampler
+from PIL import Image
 
 
-class StableDiffusion(nn.Module):
-    def __init__(self, device, alpha=0.5, model_file=None, n_inference_steps=50, seed=None, width=256, height=256):
-        super(StableDiffusion, self).__init__()
+class LoRAniDiff(nn.Module):
+    def __init__(self, device=None, alpha=0.5, model_file=None, n_inference_steps=50, seed=None, width=512, height=512, tokenizer=None):
+        super(LoRAniDiff, self).__init__()
         self.alpha = alpha
         self.device = device
         self.HEIGHT = height
@@ -31,37 +32,43 @@ class StableDiffusion(nn.Module):
             self.decoder = VAE_Decoder().to(device)
             self.diffusion = Diffusion().to(device)
             self.clip = CLIP().to(device)
-        generator = torch.Generator(device=device)
+        self.generator = torch.Generator(device=device)
         if seed is None:
-            generator.seed()
+            self.generator.seed()
         else:
-            generator.manual_seed(seed)
+            self.generator.manual_seed(seed)
+        self.tokenizer = tokenizer
 
-    def forward(self, images, captions, tokenizer, strength=0.8):
+    def forward(self, images, captions, strength=0.8):
         batch_size = len(captions)
         latents_shape = (batch_size, 4, self.LATENTS_HEIGHT, self.LATENTS_WIDTH)
-        generator = torch.Generator(device=self.device)
-        tokens = tokenizer(captions, padding="max_length", max_length=77, return_tensors="pt", truncation=True).input_ids.to(self.device)
+        tokens = self.tokenizer(captions, padding="max_length", max_length=77, return_tensors="pt", truncation=True).input_ids.to(self.device)
         # tokens = torch.tensor(tokens, dtype=torch.long, device=self.device)
         context = self.clip(tokens)
-        sampler = DDPMSampler(generator)
+        sampler = DDPMSampler(self.generator)
         sampler.set_inference_timesteps(self.n_inference_steps)
+        latents = None
         if images is not None:
-            encoder_noise = torch.randn(latents_shape, generator=generator, device=self.device)
+            encoder_noise = torch.randn(latents_shape, generator=self.generator, device=self.device)
             latents = self.encoder(images, encoder_noise)
             sampler.set_strength(strength)
             latents = sampler.add_noise(latents, sampler.timesteps[0])
         else:
-            latents = torch.randn(latents_shape, generator=generator, device=self.device)
+            latents = torch.randn(latents_shape, generator=self.generator, device=self.device)
 
         timesteps = sampler.timesteps
         for timestep in timesteps:
-            time_embedding = self.get_time_embedding(timestep).to(self.device)
+            time_embedding = LoRAniDiff.get_time_embedding(timestep).to(self.device)
             model_input = latents
             model_output = self.diffusion(model_input, context, time_embedding)
             latents = sampler.step(timestep, latents, model_output)
-
-        return self.rescale(self.decoder(latents), (-1, 1), (0, 1), clamp=True), context
+        print(f'latents: {latents}')
+        print(f'decode latent: {self.decoder(latents)}')
+        images = LoRAniDiff.rescale(self.decoder(latents), (-1, 1), (0, 255), clamp=True)
+        images = images.permute(0, 2, 3, 1)
+        images = images.to("cpu", torch.uint8).numpy()
+        print(f'image: {images[0]}')
+        return images[0], context
 
     @staticmethod
     def get_time_embedding(timestep):
@@ -84,6 +91,7 @@ class StableDiffusion(nn.Module):
         total_loss = (1 - self.alpha) * rec_loss + self.alpha * clip_loss
         return total_loss
 
+    @staticmethod
     def rescale(x, old_range, new_range, clamp=False):
         old_min, old_max = old_range
         new_min, new_max = new_range
@@ -93,3 +101,32 @@ class StableDiffusion(nn.Module):
         if clamp:
             x = x.clamp(new_min, new_max)
         return x
+
+    def generate(self, caption, input_image=None, strength=0.8):
+        """
+        Generate an image based on a caption, and optionally, an initial image.
+
+        Parameters:
+        - caption: str, the caption based on which to generate an image.
+        - initial_image: torch.Tensor, optional initial image for image-to-image generation.
+        - strength: float, the strength of the modification for image-to-image generation.
+
+        Returns:
+        - generated_image: torch.Tensor, the generated image tensor.
+        - context: torch.Tensor, the context tensor from the CLIP model.
+        """
+        self.eval()  # Set the model to evaluation mode
+        with torch.no_grad():  # Ensure no gradients are calculated
+            captions = [caption]  # Encapsulate the caption in a list
+            if input_image is not None:
+                if len(input_image.shape) == 3:  # If single image, add batch dimension
+                    input_image = input_image.unsqueeze(0)
+                input_image = input_image.to(self.device)  # Ensure the image is on the correct device
+            # Generate the image
+            generated_image, _ = self.forward(images=input_image, captions=captions, strength=strength)
+            image = Image.fromarray(generated_image)
+            print(f"Image generated successfully.")
+            print(f"Image size: {image.size}")
+            print(f'image: {image}')
+
+        return image

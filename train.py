@@ -8,7 +8,7 @@ import os
 from transformers import CLIPTokenizer
 import pandas as pd
 from PIL import Image
-from ldm.ldm import StableDiffusion
+from ldm.ldm import LoRAniDiff
 from torch.utils.data.dataset import random_split
 
 WIDTH = 512
@@ -73,15 +73,15 @@ transform = transforms.Compose([
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 parquet_path = os.path.join(BASE_DIR, 'data/textcaps/metadata.parquet')
 dataset = TextCapsDataset(parquet_path, transform=transform)
-# dataset = {'image': dataset['image'][:10], 'caption': dataset['caption'][:10]}
 train_size = int(0.8 * len(dataset))
 val_size = len(dataset) - train_size
 train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+
 # Use DataLoader to handle batching
 train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=4)
 val_loader = DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=4)
 
-model = StableDiffusion(device).to(device)
+model = LoRAniDiff(device, model_file=model_file).to(device)
 print(f'Number of GPU is: {torch.cuda.device_count()}')
 if torch.cuda.device_count() > 1:
   print(f"Let's use {torch.cuda.device_count()} GPUs!")
@@ -106,7 +106,7 @@ def evaluate_model(model, data_loader, device):
     return avg_loss
 
 print("Training...")
-accumulation_steps = 4
+accumulation_steps = 0
 for epoch in range(epochs):
     model.train()  # Set model to training mode
     for i, batch in enumerate(tqdm(train_loader)):
@@ -127,3 +127,7 @@ for epoch in range(epochs):
     # Evaluation after each epoch
     val_loss = evaluate_model(model, val_loader, device)
     print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}, Validation Loss: {val_loss:.4f}')
+
+model_save_path = "model_weight/"
+final_save_path = os.path.join(model_save_path, 'LoRAniDiff.pt')
+torch.save(model.state_dict(), final_save_path)
