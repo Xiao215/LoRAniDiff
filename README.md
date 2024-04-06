@@ -1,64 +1,77 @@
-# Stable Diffusion Project - ECE324
+# LoRAniDiff
 
-## About
+LoRAniDiff is an innovative image generation project leveraging the power of table diffusion models, fine-tuned with LoRA on a curated set of approximately 1,000 Pixiv images. This project combines the strengths of diffusion models with Low-Rank Adaptation (LoRA) to offer enhanced control and creativity in generating detailed and expressive imagery.
 
-This repository hosts the Stable Diffusion project, a part of the ECE324: Machine Intelligence, Software, and Neural Networks course at the University of Toronto's Engineering Science program. The project focuses on implementing a high-resolution image synthesis model using PyTorch, based on the principles of Stable Diffusion models.
-
-Stable Diffusion models represent an advanced area in machine learning, particularly within neural networks and image processing. These models are capable of generating detailed and coherent images from textual descriptions, showcasing the powerful capabilities of neural networks in the domain of image synthesis.
-
-This implementation aims to explore and demonstrate the intersection of machine intelligence and software engineering, underlining the practical applications and impact of neural networks in image processing and generative models.
-
-## Setup Guide
+## Getting Started
 
 ### Prerequisites
 
-- Anaconda or Miniconda (Python 3.11)
-- GPU access is recommended for efficient model training and inference
+Before you begin, please note that the `requirements.txt` for this project is still under preparation and might not cover all dependencies correctly, which could result in installation failures.
 
-### Creating a Conda Environment
+### Installation
 
-To set up the project environment, follow these steps:
-
-1. **Clone the Repository:**
-
+1. Clone this repository to your local machine using:
    ```bash
-   git clone git@github.com:Xiao215/Stable-Diffusion.git
-   cd Stable-Diffusion
+   git clone git@github.com:Xiao215/LoRAniDiff.git
    ```
 
-2. **Create the Conda Environment:**
-
-   An `environment.yml` file is provided to ease the setup of the necessary dependencies. Create the Conda environment by running:
-
+2. Install the required dependencies:
    ```bash
-   conda env create -f environment.yml
+   pip install -r requirements.txt
    ```
+> **Note:** As mentioned, the `requirements.txt` is not finalized yet, so installation may fail.
 
-   This command creates a new environment named `ece324`, based on the specifications in the `environment.yml` file.
+### Obtaining the Model Weights
 
-3. **Activate the Conda Environment:**
+To use LoRAniDiff, you'll need to obtain the model weights by running:
+```bash
+python3 ldm/utils/get_weight.py
+```
+### Using the Model
 
-   Once the environment is created, activate it using:
+With the model weights obtained, you can start generating images as follows:
 
-   ```bash
-   conda activate ece324
-   ```
+```python
+from transformers import CLIPTokenizer
+from ldm.ldm import LoRAniDiff
+import torch
 
-   Your environment is now set up with all the required dependencies.
+DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+tokenizer = CLIPTokenizer("model_weight/vocab.json", merges_file="model_weight/merges.txt")
+pt_file = "model_weight/LoRAniDiff.pt"
+prompt = "give me an image of a cat with a hat"
+
+model = LoRAniDiff(device=DEVICE, seed=42, tokenizer=tokenizer)
+model.load_state_dict(torch.load(pt_file, map_location=DEVICE))
+
+output_image = model.generate(prompt, input_image=None) # Specify your input_image if available
+```
+
+### Obtaining the Datasets
+
+This project provides two datasets for experimentation: TextCaps and Pixiv. The Pixiv dataset was manually scrapped and labeled by Llava7B. To obtain them, run:
+```python
+python3 ldm/dataset/get_data.py
+```
 
 ## Citation
 
-This project is based on the work described in the following paper:
-
-```bibtex
+This project is inspired by and based upon the work described in the paper "High-Resolution Image Synthesis with Latent Diffusion Models". We extend our gratitude to the authors for their groundbreaking contributions to the field:
+```
 @misc{rombach2021highresolution,
-  title={High-Resolution Image Synthesis with Latent Diffusion Models},
-  author={Robin Rombach and Andreas Blattmann and Dominik Lorenz and Patrick Esser and Björn Ommer},
-  year={2021},
-  eprint={2112.10752},
-  archivePrefix={arXiv},
-  primaryClass={cs.CV}
+title={High-Resolution Image Synthesis with Latent Diffusion Models},
+author={Robin Rombach and Andreas Blattmann and Dominik Lorenz and Patrick Esser and Björn Ommer},
+year={2021},
+eprint={2112.10752},
+archivePrefix={arXiv},
+primaryClass={cs.CV}
 }
 ```
 
-**Note**: Verify that the environment name and other specific details in the `environment.yml` file match your project setup.
+
+
+Special thanks to [pytorch-stable-diffusion](https://github.com/hkproj/pytorch-stable-diffusion) for providing valuable resources and support in building our stable diffusion model.
+
+## Disclaimer
+
+Please note that LoRAniDiff is designed for experimental and fun purposes only. It should not be used for any other purposes.
