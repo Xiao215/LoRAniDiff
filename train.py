@@ -32,6 +32,8 @@ generator.manual_seed(seed)
 # Load pre-initialized models
 tokenizer = CLIPTokenizer("model_weight/vocab.json", merges_file="model_weight/merges.txt")
 model_file = "model_weight/v1-5-pruned-emaonly.ckpt"
+pt_file = "model_weight/LoRAniDiff_final_model.pt"
+
 
 # Prepare dataset
 from torch.utils.data import Dataset, DataLoader
@@ -82,6 +84,7 @@ train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers
 val_loader = DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=4)
 
 model = LoRAniDiff(device, model_file=model_file).to(device)
+model.load_state_dict(torch.load(pt_file, map_location=device))
 print(f'Number of GPU is: {torch.cuda.device_count()}')
 if torch.cuda.device_count() > 1:
   print(f"Let's use {torch.cuda.device_count()} GPUs!")

@@ -11,7 +11,7 @@ from PIL import Image
 
 
 class LoRAniDiff(nn.Module):
-    def __init__(self, device=None, alpha=0.5, model_file=None, n_inference_steps=50, seed=None, width=512, height=512, tokenizer=None):
+    def __init__(self, tokenizer, device, alpha=0.5, model_file=None, n_inference_steps=50, seed=None, width=512, height=512):
         super(LoRAniDiff, self).__init__()
         self.alpha = alpha
         self.device = device
@@ -21,6 +21,7 @@ class LoRAniDiff(nn.Module):
         self.LATENTS_HEIGHT = self.HEIGHT // 8
         self.n_inference_steps = n_inference_steps
         # Initialize your models here. If model_file is provided, load the weights.
+        # NOTE: model_file should be None and is deprecated.
         if model_file is not None:
             models = model_loader.preload_models_from_standard_weights(model_file, device)
             self.encoder = models['encoder'].to(device)
@@ -39,12 +40,27 @@ class LoRAniDiff(nn.Module):
             self.generator.manual_seed(seed)
         self.tokenizer = tokenizer
 
-    def forward(self, images, captions, strength=0.8):
-        batch_size = len(captions)
+    def forward(self, prompt, images=None, uncond_prompt=[""], do_cfg=True, cfg_scale=7.5,strength=0.8):
+        batch_size = len(prompt)
+        # Assume that the unconditional prompt is the same for all samples in the batch, which is empty
+        uncond_prompt = uncond_prompt * batch_size
         latents_shape = (batch_size, 4, self.LATENTS_HEIGHT, self.LATENTS_WIDTH)
-        tokens = self.tokenizer.batch_encode_plus(captions, padding="max_length", max_length=77, return_tensors="pt", truncation=True).input_ids.to(self.device)
-        # tokens = torch.tensor(tokens, dtype=torch.long, device=self.device)
-        context = self.clip(tokens)
+
+        context = None
+        if do_cfg:
+            cond_tokens = self.tokenizer.batch_encode_plus(prompt, padding="max_length", max_length=77).input_ids
+            cond_tokens = torch.tensor(cond_tokens, dtype=torch.long, device=self.device)
+            cond_context = self.clip(cond_tokens)
+
+            uncond_tokens = self.tokenizer.batch_encode_plus(uncond_prompt, padding="max_length", max_length=77).input_ids
+            uncond_tokens = torch.tensor(uncond_tokens, dtype=torch.long, device=self.device)
+            uncond_context = self.clip(uncond_tokens)
+            context = torch.cat([cond_context, uncond_context])
+        else:
+            tokens = self.tokenizer.batch_encode_plus(prompt, padding="max_length", max_length=77).input_ids
+            tokens = torch.tensor(tokens, dtype=torch.long, device=self.device)
+            context = self.clip(tokens)
+
         sampler = DDPMSampler(self.generator)
         sampler.set_inference_timesteps(self.n_inference_steps)
         latents = None
@@ -56,11 +72,15 @@ class LoRAniDiff(nn.Module):
         else:
             latents = torch.randn(latents_shape, generator=self.generator, device=self.device)
 
-        timesteps = sampler.timesteps
-        for timestep in timesteps:
+        for timestep in sampler.timesteps:
             time_embedding = LoRAniDiff.get_time_embedding(timestep).to(self.device)
             model_input = latents
+            if do_cfg:
+                model_input = model_input.repeat(2, 1, 1, 1)
             model_output = self.diffusion(model_input, context, time_embedding)
+            if do_cfg:
+                output_cond, output_uncond = model_output.chunk(2)
+                model_output = cfg_scale * (output_cond - output_uncond) + output_uncond
             latents = sampler.step(timestep, latents, model_output)
         print(f'latents: {latents}')
         print(f'decode latent: {self.decoder(latents)}')
@@ -124,7 +144,7 @@ class LoRAniDiff(nn.Module):
                     input_image = input_image.unsqueeze(0)
                 input_image = input_image.to(self.device)  # Ensure the image is on the correct device
             # Generate the image
-            generated_image, _ = self.forward(images=input_image, captions=captions, strength=strength)
+            generated_image, _ = self.forward(images=input_image, prompt=captions, strength=strength)
             image = Image.fromarray(generated_image)
             print(f"Image generated successfully.")
             print(f"Image size: {image.size}")
