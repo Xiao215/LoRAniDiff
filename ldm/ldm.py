@@ -42,7 +42,7 @@ class LoRAniDiff(nn.Module):
     def forward(self, images, captions, strength=0.8):
         batch_size = len(captions)
         latents_shape = (batch_size, 4, self.LATENTS_HEIGHT, self.LATENTS_WIDTH)
-        tokens = self.tokenizer(captions, padding="max_length", max_length=77, return_tensors="pt", truncation=True).input_ids.to(self.device)
+        tokens = self.tokenizer.batch_encode_plus(captions, padding="max_length", max_length=77, return_tensors="pt", truncation=True).input_ids.to(self.device)
         # tokens = torch.tensor(tokens, dtype=torch.long, device=self.device)
         context = self.clip(tokens)
         sampler = DDPMSampler(self.generator)
@@ -79,6 +79,18 @@ class LoRAniDiff(nn.Module):
         # Shape: (1, 160 * 2)
         return torch.cat([torch.cos(x), torch.sin(x)], dim=-1)
 
+    @staticmethod
+    def rescale(x, old_range, new_range, clamp=False):
+        old_min, old_max = old_range
+        new_min, new_max = new_range
+        x -= old_min
+        x *= (new_max - new_min) / (old_max - old_min)
+        x += new_min
+        if clamp:
+            x = x.clamp(new_min, new_max)
+        return x
+
+
     def compute_loss(self, generated_images, target_images, text_embeddings):
         rec_loss = F.mse_loss(generated_images, target_images)
         generated_images = (generated_images + 1) / 2.0
@@ -90,17 +102,6 @@ class LoRAniDiff(nn.Module):
         clip_loss = -torch.mean(similarity)
         total_loss = (1 - self.alpha) * rec_loss + self.alpha * clip_loss
         return total_loss
-
-    @staticmethod
-    def rescale(x, old_range, new_range, clamp=False):
-        old_min, old_max = old_range
-        new_min, new_max = new_range
-        x -= old_min
-        x *= (new_max - new_min) / (old_max - old_min)
-        x += new_min
-        if clamp:
-            x = x.clamp(new_min, new_max)
-        return x
 
     def generate(self, caption, input_image=None, strength=0.8):
         """
