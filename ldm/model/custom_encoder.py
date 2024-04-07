@@ -87,8 +87,10 @@ class VAE_Encoder(nn.Module):
             residualBlock = nn.ModuleList()
             for _ in range(num_res_blocks):
                 residualBlock.append(
-                    VAE_ResidualBlock(in_ch=block_in, out_ch=block_out, dropout=dropout)
-                )
+                    VAE_ResidualBlock(
+                        in_ch=block_in,
+                        out_ch=block_out,
+                        dropout=dropout))
                 block_in = block_out
             down.residualBlock = residualBlock
 

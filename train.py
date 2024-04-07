@@ -79,10 +79,12 @@ if args.dataset == "textcaps":
     images_path = os.path.join(BASE_DIR, "data/textcaps/processed")
 
 elif args.dataset == "pixiv":
-    parquet_path = os.path.join(BASE_DIR, "data/pixiv/pixiv_image_caption.parquet")
+    parquet_path = os.path.join(
+        BASE_DIR, "data/pixiv/pixiv_image_caption.parquet")
     images_path = os.path.join(BASE_DIR, "data/pixiv/pixiv_images")
 else:
-    raise ValueError("Invalid dataset name. Please specify 'textcaps' or 'pixiv'.")
+    raise ValueError(
+        "Invalid dataset name. Please specify 'textcaps' or 'pixiv'.")
 dataset = ImageCaptionDataset(parquet_path, images_path, transform=transform)
 train_size = int(0.8 * len(dataset))
 val_size = len(dataset) - train_size
@@ -117,8 +119,10 @@ def evaluate_model(model, data_loader, device):
         for batch in data_loader:
             images = batch["image"].to(device)
             captions = batch["caption"]
-            generated_images, text_embeddings = model(images, captions, tokenizer)
-            loss = model.compute_loss(generated_images, images, text_embeddings)
+            generated_images, text_embeddings = model(
+                images, captions, tokenizer)
+            loss = model.compute_loss(
+                generated_images, images, text_embeddings)
             total_loss += loss.item()
     avg_loss = total_loss / len(data_loader)
     return avg_loss

@@ -39,7 +39,10 @@ strength = 0.9
 model = LoRAniDiff(device=DEVICE, seed=42, tokenizer=tokenizer)
 model.load_state_dict(torch.load(pt_file, map_location=DEVICE))
 
-output_image = model.generate(prompt, input_image=input_image, strength=strength)
+output_image = model.generate(
+    prompt,
+    input_image=input_image,
+    strength=strength)
 
 
 save_path = Path("image/output.jpg")

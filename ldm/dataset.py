@@ -10,8 +10,10 @@ class ImageCaptionDataset(Dataset):
     """Dataset class for an image captioning dataset."""
 
     def __init__(
-        self, parquet_file: str, image_dir: str, transform: Callable | None = None
-    ):
+            self,
+            parquet_file: str,
+            image_dir: str,
+            transform: Callable | None = None):
         """
         Args:
             parquet_file (string): Path to the parquet file with metadata.

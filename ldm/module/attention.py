@@ -5,7 +5,12 @@ import math
 
 
 class SelfAttention(nn.Module):
-    def __init__(self, n_heads, d_embed, in_proj_bias=True, out_proj_bias=True):
+    def __init__(
+            self,
+            n_heads,
+            d_embed,
+            in_proj_bias=True,
+            out_proj_bias=True):
         super().__init__()
         # This combines the Wq, Wk and Wv matrices into one matrix
         self.in_proj = nn.Linear(d_embed, 3 * d_embed, bias=in_proj_bias)
@@ -24,7 +29,11 @@ class SelfAttention(nn.Module):
         batch_size, sequence_length, d_embed = input_shape
 
         # (Batch_Size, Seq_Len, H, Dim / H)
-        interim_shape = (batch_size, sequence_length, self.n_heads, self.d_head)
+        interim_shape = (
+            batch_size,
+            sequence_length,
+            self.n_heads,
+            self.d_head)
 
         # (Batch_Size, Seq_Len, Dim) -> (Batch_Size, Seq_Len, Dim * 3) -> 3 tensor of shape (Batch_Size, Seq_Len, Dim)
         q, k, v = self.in_proj(x).chunk(3, dim=-1)

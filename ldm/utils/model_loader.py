@@ -1,12 +1,14 @@
+import torch
+
 from ldm.model.clip import CLIP
 from ldm.model.encoder import VAE_Encoder
 from ldm.model.decoder import VAE_Decoder
 from ldm.model.diffusion import Diffusion
-
 import ldm.utils.model_converter as model_converter
 
 
-def preload_models_from_standard_weights(ckpt_path, device):
+def preload_models_from_standard_weights(
+        ckpt_path: str, device: torch.device,):
     state_dict = model_converter.load_from_standard_weights(ckpt_path, device)
 
     encoder = VAE_Encoder().to(device)
