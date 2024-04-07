@@ -7,8 +7,10 @@ import pandas as pd
 
 # Directory containing images
 BASE_DIR = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-)
+    os.path.dirname(
+        os.path.dirname(
+            os.path.dirname(
+                os.path.abspath(__file__)))))
 image_dir = os.path.join(BASE_DIR, "data/pixiv/images")
 # Specify your cache directory
 cache_dir = os.path.join(BASE_DIR, "llava_cache/")

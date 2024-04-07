@@ -12,8 +12,11 @@ def Normalize(in_channels):
 
 class SelfAttention(nn.Module):
     def __init__(
-        self, n_heads: int, d_embed: int, in_proj_bias: bool = True, out_proj_bias=True
-    ) -> None:
+            self,
+            n_heads: int,
+            d_embed: int,
+            in_proj_bias: bool = True,
+            out_proj_bias=True) -> None:
         super().__init__()
         self.n_heads = n_heads
         self.d_embed = d_embed
@@ -25,12 +28,16 @@ class SelfAttention(nn.Module):
         # # TODO: The paper has no normalization layer, but the code has it? I guess it's mostly good to have it for numerical stability.
         # self.norm = Normalize(d_embed)
 
-        # This is the linear layer to project the input to the query, key and value.
+        # This is the linear layer to project the input to the query, key and
+        # value.
         self.in_proj = nn.Linear(d_embed, d_embed * 3, bias=in_proj_bias)
 
         self.out_proj = nn.Linear(d_embed, d_embed, bias=out_proj_bias)
 
-    def forward(self, x: torch.Tensor, causal_mask: bool = False) -> torch.Tensor:
+    def forward(
+            self,
+            x: torch.Tensor,
+            causal_mask: bool = False) -> torch.Tensor:
         # x: (Batch_Size, Seq_Length, d_embed)
         h_ = x
 
@@ -72,7 +79,8 @@ class SelfAttention(nn.Module):
         h_ = h_.view(b, len_seq, c)
         h_ = self.out_proj(h_)
 
-        # TODO: The paper doesn't seem to have a residual connection, but the code has it, so I'll keep it for now.
+        # TODO: The paper doesn't seem to have a residual connection, but the
+        # code has it, so I'll keep it for now.
         return x + h_
 
 
@@ -90,11 +98,13 @@ class CrossAttention(nn.Module):
 
     def forward(self, x, y):
         # x (latent): # (Batch_Size, Seq_Len_Q, Dim_Q)
-        # y (context): # (Batch_Size, Seq_Len_KV, Dim_KV) = (Batch_Size, 77, 768)
+        # y (context): # (Batch_Size, Seq_Len_KV, Dim_KV) = (Batch_Size, 77,
+        # 768)
 
         input_shape = x.shape
         batch_size, sequence_length, d_embed = input_shape
-        # Divide each embedding of Q into multiple heads such that d_heads * n_heads = Dim_Q
+        # Divide each embedding of Q into multiple heads such that d_heads *
+        # n_heads = Dim_Q
         interim_shape = (batch_size, -1, self.n_heads, self.d_head)
 
         # (Batch_Size, Seq_Len_Q, Dim_Q) -> (Batch_Size, Seq_Len_Q, Dim_Q)
@@ -136,11 +146,15 @@ class CrossAttention(nn.Module):
         return output
 
 
-# TODO: This seems to be another type of attention? for image? It deals with images while above deal with sequences.
+# TODO: This seems to be another type of attention? for image? It deals
+# with images while above deal with sequences.
 class SpatialSelfAttention(nn.Module):
     def __init__(
-        self, n_heads: int, d_embed: int, in_proj_bias: bool = True, out_proj_bias=True
-    ) -> None:
+            self,
+            n_heads: int,
+            d_embed: int,
+            in_proj_bias: bool = True,
+            out_proj_bias=True) -> None:
         super.__init__()
         self.n_heads = n_heads
         self.d_embed = d_embed
@@ -150,14 +164,23 @@ class SpatialSelfAttention(nn.Module):
         self.d_head = d_embed // n_heads
 
         self.norm = Normalize(d_embed)
-        # This is the convolutional layer to project the input to the query, key and value.
+        # This is the convolutional layer to project the input to the query,
+        # key and value.
         self.qkv = nn.Conv2d(
-            d_embed, d_embed * 3, kernel_size=1, stride=1, padding=0, bias=in_proj_bias
-        )
+            d_embed,
+            d_embed * 3,
+            kernel_size=1,
+            stride=1,
+            padding=0,
+            bias=in_proj_bias)
 
         self.out_proj = nn.Conv2d(
-            d_embed, d_embed, kernel_size=1, stride=1, padding=0, bias=out_proj_bias
-        )
+            d_embed,
+            d_embed,
+            kernel_size=1,
+            stride=1,
+            padding=0,
+            bias=out_proj_bias)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x: (Batch_Size, d_embed, Height, Width)

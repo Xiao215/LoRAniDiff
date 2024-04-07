@@ -8,8 +8,10 @@ import shutil
 
 # Paths
 BASE_DIR = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-)
+    os.path.dirname(
+        os.path.dirname(
+            os.path.dirname(
+                os.path.abspath(__file__)))))
 IMAGE_DIR = os.path.join(BASE_DIR, "data/textcaps/train")
 METADATA_PATH = os.path.join(BASE_DIR, "data/textcaps/metadata.json")
 OUTPUT_DIR = os.path.join(BASE_DIR, "data/textcaps/processed")
@@ -26,7 +28,8 @@ def pad_and_resize_image(image, target_size):
     max_size = max(image.size)
     padding = (max_size - image.width, max_size - image.height)
     # Pad the image to make it square
-    padded_image = ImageOps.expand(image, (0, 0, padding[0], padding[1]), fill="black")
+    padded_image = ImageOps.expand(
+        image, (0, 0, padding[0], padding[1]), fill="black")
     # Resize the padded image
     return padded_image.resize((target_size, target_size))
 

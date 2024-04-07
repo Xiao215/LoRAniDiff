@@ -39,8 +39,10 @@ def prompt_for_urls(image_dir, target_prefix):
 
 def main():
     BASE_DIR = os.path.dirname(
-        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    )
+        os.path.dirname(
+            os.path.dirname(
+                os.path.dirname(
+                    os.path.abspath(__file__)))))
     image_dir = os.path.join(BASE_DIR, "data/pixiv/images")
 
     # Specify the target prefix

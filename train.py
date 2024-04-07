@@ -1,3 +1,4 @@
+from torch.utils.data import Dataset, DataLoader
 import torch
 import torch.nn.functional as F
 from torch.optim import Adam
@@ -39,7 +40,6 @@ pt_file = "model_weight/LoRAniDiff.pt"
 
 
 # Prepare dataset
-from torch.utils.data import Dataset, DataLoader
 
 
 class TextCapsDataset(Dataset):
@@ -95,7 +95,11 @@ val_loader = DataLoader(
     val_dataset, batch_size=batch_size, shuffle=False, num_workers=4
 )
 
-model = LoRAniDiff(device, model_file=model_file, width=WIDTH, height=HEIGHT).to(device)
+model = LoRAniDiff(
+    device,
+    model_file=model_file,
+    width=WIDTH,
+    height=HEIGHT).to(device)
 model.load_state_dict(torch.load(pt_file, map_location=device))
 print(f"Number of GPU is: {torch.cuda.device_count()}")
 if torch.cuda.device_count() > 1:
@@ -114,9 +118,12 @@ def evaluate_model(model, data_loader, device):
         for batch in data_loader:
             images = batch["image"].to(device)
             captions = batch["caption"]
-            # The following line might need adjustments based on your model's specifics
-            generated_images, text_embeddings = model(images, captions, tokenizer)
-            loss = model.compute_loss(generated_images, images, text_embeddings)
+            # The following line might need adjustments based on your model's
+            # specifics
+            generated_images, text_embeddings = model(
+                images, captions, tokenizer)
+            loss = model.compute_loss(
+                generated_images, images, text_embeddings)
             total_loss += loss.item()
     avg_loss = total_loss / len(data_loader)
     return avg_loss
@@ -135,7 +142,8 @@ for epoch in range(epochs):
         uncond_prompt = [""] * len(captions)
         print(f"images: {images.size()}")
         print(f"captions: {captions}")
-        generated_images, text_embeddings, _ = model(images, captions, uncond_prompt)
+        generated_images, text_embeddings, _ = model(
+            images, captions, uncond_prompt)
 
         print(f"generated_images: {generated_images.size()}")
         # TODO!!!

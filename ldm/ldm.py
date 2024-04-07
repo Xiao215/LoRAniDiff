@@ -62,8 +62,13 @@ class LoRAniDiff(nn.Module):
         strength=0.8,
     ):
         batch_size = len(prompt)
-        # Assume that the unconditional prompt is the same for all samples in the batch, which is empty
-        latents_shape = (batch_size, 4, self.LATENTS_HEIGHT, self.LATENTS_WIDTH)
+        # Assume that the unconditional prompt is the same for all samples in
+        # the batch, which is empty
+        latents_shape = (
+            batch_size,
+            4,
+            self.LATENTS_HEIGHT,
+            self.LATENTS_WIDTH)
 
         context = None
         if do_cfg:
@@ -106,14 +111,16 @@ class LoRAniDiff(nn.Module):
             )
 
         for timestep in sampler.timesteps:
-            time_embedding = LoRAniDiff.get_time_embedding(timestep).to(self.device)
+            time_embedding = LoRAniDiff.get_time_embedding(
+                timestep).to(self.device)
             model_input = latents
             if do_cfg:
                 model_input = model_input.repeat(2, 1, 1, 1)
             model_output = self.diffusion(model_input, context, time_embedding)
             if do_cfg:
                 output_cond, output_uncond = model_output.chunk(2)
-                model_output = cfg_scale * (output_cond - output_uncond) + output_uncond
+                model_output = cfg_scale * \
+                    (output_cond - output_uncond) + output_uncond
             latents = sampler.step(timestep, latents, model_output)
         print(f"latents: {latents}")
         print(f"decode latent: {self.decoder(latents)}")
@@ -132,7 +139,9 @@ class LoRAniDiff(nn.Module):
             10000, -torch.arange(start=0, end=160, dtype=torch.float32) / 160
         )
         # Shape: (1, 160)
-        x = torch.tensor([timestep], dtype=torch.float32)[:, None] * freqs[None]
+        x = torch.tensor(
+            [timestep], dtype=torch.float32)[
+            :, None] * freqs[None]
         # Shape: (1, 160 * 2)
         return torch.cat([torch.cos(x), torch.sin(x)], dim=-1)
 
@@ -171,7 +180,8 @@ class LoRAniDiff(nn.Module):
             torch.sum(image_features * text_features_uncond, dim=-1)
         )
 
-        clip_loss = clip_loss_cond - cfg_scale * (clip_loss_cond - clip_loss_uncond)
+        clip_loss = clip_loss_cond - cfg_scale * \
+            (clip_loss_cond - clip_loss_uncond)
 
         total_loss = (1 - self.alpha) * rec_loss + self.alpha * clip_loss
         return total_loss
@@ -193,7 +203,8 @@ class LoRAniDiff(nn.Module):
         with torch.no_grad():  # Ensure no gradients are calculated
             captions = [caption]  # Encapsulate the caption in a list
             if input_image is not None:
-                if len(input_image.shape) == 3:  # If single image, add batch dimension
+                if len(
+                        input_image.shape) == 3:  # If single image, add batch dimension
                     input_image = input_image.unsqueeze(0)
                 input_image = input_image.to(
                     self.device

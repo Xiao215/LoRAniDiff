@@ -48,8 +48,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
     download_dir = os.path.join(
         os.path.dirname(
-            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        ),
+            os.path.dirname(
+                os.path.dirname(
+                    os.path.dirname(
+                        os.path.abspath(__file__))))),
         "data/pixiv",
     )
 

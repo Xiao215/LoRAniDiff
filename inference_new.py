@@ -25,20 +25,24 @@ pt_file = "model_weight/LoRAniDiff.pt"
 prompt = "give me a image of a cat with a hat"
 cfg_scale = 8  # min: 1, max: 14
 
-## IMAGE TO IMAGE
+# IMAGE TO IMAGE
 
 input_image = None
 # Comment to disable image to image
 # image_path = "../images/dog.jpg"
 # input_image = Image.open(image_path)
 # Higher values means more noise will be added to the input image, so the result will further from the input image.
-# Lower values means less noise is added to the input image, so output will be closer to the input image.
+# Lower values means less noise is added to the input image, so output
+# will be closer to the input image.
 strength = 0.9
 
 model = LoRAniDiff(device=DEVICE, seed=42, tokenizer=tokenizer)
 model.load_state_dict(torch.load(pt_file, map_location=DEVICE))
 
-output_image = model.generate(prompt, input_image=input_image, strength=strength)
+output_image = model.generate(
+    prompt,
+    input_image=input_image,
+    strength=strength)
 
 
 save_path = Path("image/output.jpg")

@@ -90,7 +90,8 @@ class UNET_AttentionBlock(nn.Module):
         channels = n_head * n_embd
 
         self.groupnorm = nn.GroupNorm(32, channels, eps=1e-6)
-        self.conv_input = nn.Conv2d(channels, channels, kernel_size=1, padding=0)
+        self.conv_input = nn.Conv2d(
+            channels, channels, kernel_size=1, padding=0)
 
         self.layernorm_1 = nn.LayerNorm(channels)
         self.attention_1 = SelfAttention(n_head, channels, in_proj_bias=False)
@@ -102,7 +103,8 @@ class UNET_AttentionBlock(nn.Module):
         self.linear_geglu_1 = nn.Linear(channels, 4 * channels * 2)
         self.linear_geglu_2 = nn.Linear(4 * channels, channels)
 
-        self.conv_output = nn.Conv2d(channels, channels, kernel_size=1, padding=0)
+        self.conv_output = nn.Conv2d(
+            channels, channels, kernel_size=1, padding=0)
 
     def forward(self, x, context):
         # x: (Batch_Size, Features, Height, Width)
@@ -164,7 +166,9 @@ class UNET_AttentionBlock(nn.Module):
         # (Batch_Size, Height * Width, Features) -> two tensors of shape (Batch_Size, Height * Width, Features * 4)
         x, gate = self.linear_geglu_1(x).chunk(2, dim=-1)
 
-        # Element-wise product: (Batch_Size, Height * Width, Features * 4) * (Batch_Size, Height * Width, Features * 4) -> (Batch_Size, Height * Width, Features * 4)
+        # Element-wise product: (Batch_Size, Height * Width, Features * 4) *
+        # (Batch_Size, Height * Width, Features * 4) -> (Batch_Size, Height *
+        # Width, Features * 4)
         x = x * F.gelu(gate)
 
         # (Batch_Size, Height * Width, Features * 4) -> (Batch_Size, Height * Width, Features)
@@ -330,7 +334,9 @@ class UNET(nn.Module):
         x = self.bottleneck(x, context, time)
 
         for layers in self.decoders:
-            # Since we always concat with the skip connection of the encoder, the number of features increases before being sent to the decoder's layer
+            # Since we always concat with the skip connection of the encoder,
+            # the number of features increases before being sent to the
+            # decoder's layer
             x = torch.cat((x, skip_connections.pop()), dim=1)
             x = layers(x, context, time)
 
@@ -341,7 +347,11 @@ class UNET_OutputLayer(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
         self.groupnorm = nn.GroupNorm(32, in_channels)
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1)
+        self.conv = nn.Conv2d(
+            in_channels,
+            out_channels,
+            kernel_size=3,
+            padding=1)
 
     def forward(self, x):
         # x: (Batch_Size, 320, Height / 8, Width / 8)

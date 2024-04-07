@@ -87,8 +87,10 @@ class VAE_Encoder(nn.Module):
             residualBlock = nn.ModuleList()
             for _ in range(num_res_blocks):
                 residualBlock.append(
-                    VAE_ResidualBlock(in_ch=block_in, out_ch=block_out, dropout=dropout)
-                )
+                    VAE_ResidualBlock(
+                        in_ch=block_in,
+                        out_ch=block_out,
+                        dropout=dropout))
                 block_in = block_out
             down.residualBlock = residualBlock
 
@@ -149,6 +151,7 @@ class VAE_Encoder(nn.Module):
         x = mean + stdev * noise
 
         # scale x by a constant
-        # constant taken from: https://github.com/CompVis/stable-diffusion/blob/21f890f9da3cfbeaba8e2ac3c425ee9e998d5229/configs/stable-diffusion/v1-inference.yaml#L17C1-L17C1
+        # constant taken from:
+        # https://github.com/CompVis/stable-diffusion/blob/21f890f9da3cfbeaba8e2ac3c425ee9e998d5229/configs/stable-diffusion/v1-inference.yaml#L17C1-L17C1
         x *= 0.18215
         return x

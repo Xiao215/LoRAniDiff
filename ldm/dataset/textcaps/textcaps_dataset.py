@@ -13,8 +13,10 @@ json_file = "metadata.json"
 zip_file = "images.zip"
 target_data_dir = os.path.join(
     os.path.dirname(
-        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    ),
+        os.path.dirname(
+            os.path.dirname(
+                os.path.dirname(
+                    os.path.abspath(__file__))))),
     "data/textcaps",
 )
 
@@ -24,7 +26,9 @@ os.makedirs(target_data_dir, exist_ok=True)
 # Check if JSON file already exists
 if not os.path.exists(os.path.join(target_data_dir, json_file)):
     # Download JSON file
-    urllib.request.urlretrieve(json_url, os.path.join(target_data_dir, json_file))
+    urllib.request.urlretrieve(
+        json_url, os.path.join(
+            target_data_dir, json_file))
 
 # Check if the 'train' folder already exists instead of 'train_image'
 if not os.path.exists(os.path.join(target_data_dir, "train")):
@@ -32,7 +36,9 @@ if not os.path.exists(os.path.join(target_data_dir, "train")):
     # Check if ZIP file already exists
     if not os.path.exists(os.path.join(target_data_dir, zip_file)):
         # Download ZIP file
-        urllib.request.urlretrieve(zip_url, os.path.join(target_data_dir, zip_file))
+        urllib.request.urlretrieve(
+            zip_url, os.path.join(
+                target_data_dir, zip_file))
 
     # Extract ZIP file
     with zipfile.ZipFile(os.path.join(target_data_dir, zip_file), "r") as zip_ref:

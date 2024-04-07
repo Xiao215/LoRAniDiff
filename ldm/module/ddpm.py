@@ -12,13 +12,14 @@ class DDPMSampler:
         beta_end: float = 0.0120,
     ):
         # Params "beta_start" and "beta_end" taken from: https://github.com/CompVis/stable-diffusion/blob/21f890f9da3cfbeaba8e2ac3c425ee9e998d5229/configs/stable-diffusion/v1-inference.yaml#L5C8-L5C8
-        # For the naming conventions, refer to the DDPM paper (https://arxiv.org/pdf/2006.11239.pdf)
+        # For the naming conventions, refer to the DDPM paper
+        # (https://arxiv.org/pdf/2006.11239.pdf)
         self.betas = (
             torch.linspace(
-                beta_start**0.5, beta_end**0.5, num_training_steps, dtype=torch.float32
-            )
-            ** 2
-        )
+                beta_start**0.5,
+                beta_end**0.5,
+                num_training_steps,
+                dtype=torch.float32) ** 2)
         self.alphas = 1.0 - self.betas
         self.alphas_cumprod = torch.cumprod(self.alphas, dim=0)
         self.one = torch.tensor(1.0)
@@ -26,7 +27,8 @@ class DDPMSampler:
         self.generator = generator
 
         self.num_train_timesteps = num_training_steps
-        self.timesteps = torch.from_numpy(np.arange(0, num_training_steps)[::-1].copy())
+        self.timesteps = torch.from_numpy(
+            np.arange(0, num_training_steps)[::-1].copy())
 
     def set_inference_timesteps(self, num_inference_steps=50):
         self.num_inference_steps = num_inference_steps
@@ -52,8 +54,10 @@ class DDPMSampler:
 
         # For t > 0, compute predicted variance βt (see formula (6) and (7) from https://arxiv.org/pdf/2006.11239.pdf)
         # and sample from it to get previous sample
-        # x_{t-1} ~ N(pred_prev_sample, variance) == add variance to pred_sample
-        variance = (1 - alpha_prod_t_prev) / (1 - alpha_prod_t) * current_beta_t
+        # x_{t-1} ~ N(pred_prev_sample, variance) == add variance to
+        # pred_sample
+        variance = (1 - alpha_prod_t_prev) / \
+            (1 - alpha_prod_t) * current_beta_t
 
         # we always take the log of variance, so clamp it to ensure it's not 0
         variance = torch.clamp(variance, min=1e-20)
@@ -67,11 +71,16 @@ class DDPMSampler:
         Less noise (strength ~ 0) means that the output will be closer to the input image.
         """
         # start_step is the number of noise levels to skip
-        start_step = self.num_inference_steps - int(self.num_inference_steps * strength)
+        start_step = self.num_inference_steps - \
+            int(self.num_inference_steps * strength)
         self.timesteps = self.timesteps[start_step:]
         self.start_step = start_step
 
-    def step(self, timestep: int, latents: torch.Tensor, model_output: torch.Tensor):
+    def step(
+            self,
+            timestep: int,
+            latents: torch.Tensor,
+            model_output: torch.Tensor):
         t = timestep
         prev_t = self._get_previous_timestep(t)
 
@@ -94,7 +103,8 @@ class DDPMSampler:
         pred_original_sample_coeff = (
             alpha_prod_t_prev ** (0.5) * current_beta_t
         ) / beta_prod_t
-        current_sample_coeff = current_alpha_t ** (0.5) * beta_prod_t_prev / beta_prod_t
+        current_sample_coeff = current_alpha_t ** (
+            0.5) * beta_prod_t_prev / beta_prod_t
 
         # 5. Compute predicted previous sample µ_t
         # See formula (7) from https://arxiv.org/pdf/2006.11239.pdf
@@ -113,7 +123,8 @@ class DDPMSampler:
                 device=device,
                 dtype=model_output.dtype,
             )
-            # Compute the variance as per formula (7) from https://arxiv.org/pdf/2006.11239.pdf
+            # Compute the variance as per formula (7) from
+            # https://arxiv.org/pdf/2006.11239.pdf
             variance = (self._get_variance(t) ** 0.5) * noise
 
         # sample from N(mu, sigma) = X can be obtained by X = mu + sigma * N(0, 1)
@@ -139,12 +150,15 @@ class DDPMSampler:
 
         sqrt_one_minus_alpha_prod = (1 - alphas_cumprod[timesteps]) ** 0.5
         sqrt_one_minus_alpha_prod = sqrt_one_minus_alpha_prod.flatten()
-        while len(sqrt_one_minus_alpha_prod.shape) < len(original_samples.shape):
+        while len(
+                sqrt_one_minus_alpha_prod.shape) < len(
+                original_samples.shape):
             sqrt_one_minus_alpha_prod = sqrt_one_minus_alpha_prod.unsqueeze(-1)
 
         # Sample from q(x_t | x_0) as in equation (4) of https://arxiv.org/pdf/2006.11239.pdf
         # Because N(mu, sigma) = X can be obtained by X = mu + sigma * N(0, 1)
-        # here mu = sqrt_alpha_prod * original_samples and sigma = sqrt_one_minus_alpha_prod
+        # here mu = sqrt_alpha_prod * original_samples and sigma =
+        # sqrt_one_minus_alpha_prod
         noise = torch.randn(
             original_samples.shape,
             generator=self.generator,
@@ -152,6 +166,8 @@ class DDPMSampler:
             dtype=original_samples.dtype,
         )
         noisy_samples = (
-            sqrt_alpha_prod * original_samples + sqrt_one_minus_alpha_prod * noise
-        )
+            sqrt_alpha_prod *
+            original_samples +
+            sqrt_one_minus_alpha_prod *
+            noise)
         return noisy_samples

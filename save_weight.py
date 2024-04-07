@@ -30,7 +30,8 @@ model.to(device)
 
 # Load the pre-trained weights
 # Assuming `LoRAniDiff`'s constructor automatically loads the weights from `model_file`.
-# If not, you might need a model.load_state_dict(torch.load(model_file)) statement here, adjusted as per your model's architecture.
+# If not, you might need a model.load_state_dict(torch.load(model_file))
+# statement here, adjusted as per your model's architecture.
 
 # Model saving path
 model_save_path = "model_weight/"
