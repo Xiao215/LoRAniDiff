@@ -11,7 +11,7 @@ networkx==3.2.1+computecanada
 numpy==1.25.2+computecanada
 packaging==24.0
 pandas==2.1.1+computecanada
-Pillow==10.1.0+computecanada
+Pillow==10.3.0
 Pillow_SIMD==9.0.0.post1+computecanada
 python_dateutil==2.9.0.post0+computecanada
 pytz==2024.1+computecanada
