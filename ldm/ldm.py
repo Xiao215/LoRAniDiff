@@ -1,17 +1,28 @@
+"""
+This module implements the LoRAniDiff model for latent diffusion, which can be used for
+text-to-image generation. It integrates components such as VAE encoder and decoder, CLIP model
+for text and image embeddings, and a diffusion model for the generative process.
+"""
+
+import os
 import torch
-import torch.nn as nn
+from torch import nn
 import torch.nn.functional as F
-import ldm.utils.model_loader as model_loader
+from PIL import Image
+from transformers import PreTrainedTokenizer
+from ldm.utils import model_loader
 from ldm.model.clip import CLIP
 from ldm.model.encoder import VAE_Encoder
 from ldm.model.decoder import VAE_Decoder
 from ldm.model.diffusion import Diffusion
 from ldm.module.ddpm import DDPMSampler
-from PIL import Image
-from transformers import PreTrainedTokenizer
-
 
 class LoRAniDiff(nn.Module):
+    """
+    LoRAniDiff model integrates various components for generating images from text prompts.
+    It can be conditioned on text input to generate relevant images or perform modifications
+    on existing images to align them with given text prompts.
+    """
     def __init__(
         self,
         tokenizer: PreTrainedTokenizer,
@@ -23,20 +34,18 @@ class LoRAniDiff(nn.Module):
         width: int = 512,
         height: int = 512,
     ):
-        super(LoRAniDiff, self).__init__()
+        super().__init__()
         self.alpha = alpha
         self.device = device
-        self.HEIGHT = height
-        self.WIDTH = width
-        self.LATENTS_WIDTH = self.WIDTH // 8
-        self.LATENTS_HEIGHT = self.HEIGHT // 8
+        self.height = height
+        self.width = width
+        self.latents_width = self.width // 8
+        self.latents_height = self.height // 8
         self.n_inference_steps = n_inference_steps
-        # Initialize your models here. If model_file is provided, load the weights.
-        # NOTE: model_file should be None and is deprecated.
+
         if model_file is not None:
-            models = model_loader.preload_models_from_standard_weights(
-                model_file, device
-            )
+            # Assuming model_loader can preload models given a file
+            models = model_loader.preload_models_from_standard_weights(model_file, device)
             self.encoder = models["encoder"].to(device)
             self.decoder = models["decoder"].to(device)
             self.diffusion = models["diffusion"].to(device)
@@ -46,30 +55,43 @@ class LoRAniDiff(nn.Module):
             self.decoder = VAE_Decoder().to(device)
             self.diffusion = Diffusion().to(device)
             self.clip = CLIP().to(device)
+
         self.generator = torch.Generator(device=device)
-        if seed is None:
-            self.generator.seed()
-        else:
+        if seed is not None:
             self.generator.manual_seed(seed)
         self.tokenizer = tokenizer
 
     def forward(
         self,
         prompt: list[str],
-        uncond_prompt: list[str],
+        uncond_prompt: list[str] = [""],
         images: torch.Tensor | None = None,
         do_cfg: bool = True,
         cfg_scale: float = 7.5,
         strength: float = 0.8,
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """
+        Forward pass through the model to generate images based on text prompts and/or initial images.
+
+        Parameters:
+        - prompt (list[str]): Text prompts for conditional generation.
+        - uncond_prompt (list[str]): Text prompts for unconditional generation, usually empty.
+        - images (torch.Tensor | None): Optional initial images for image-to-image generation.
+        - do_cfg (bool): Whether to apply classifier-free guidance.
+        - cfg_scale (float): Scale for classifier-free guidance.
+        - strength (float): Strength of modifications for image-to-image generation.
+
+        Returns:
+        - tuple containing generated images, conditional context, and unconditional context.
+        """
         batch_size = len(prompt)
         # Assume that the unconditional prompt is the same for all samples in
         # the batch, which is empty
         latents_shape = (
             batch_size,
             4,
-            self.LATENTS_HEIGHT,
-            self.LATENTS_WIDTH)
+            self.latents_height,
+            self.latents_width)
 
         context = None
         if do_cfg:
@@ -200,16 +222,16 @@ class LoRAniDiff(nn.Module):
         strength: float = 0.8,
     ) -> Image.Image:
         """
-        Generate an image based on a caption, and optionally, an initial image.
+        Generates an image based on the provided text caption and optional input image for
+        image-to-image generation.
 
         Parameters:
-        - caption: str, the caption based on which to generate an image.
-        - initial_image: torch.Tensor, optional initial image for image-to-image generation.
-        - strength: float, the strength of the modification for image-to-image generation.
+        - caption (str): The caption describing the desired output image.
+        - input_image (torch.Tensor | None): Optional initial image for image-to-image generation.
+        - strength (float): The strength of the transformation for image-to-image generation.
 
         Returns:
-        - generated_image: torch.Tensor, the generated image tensor.
-        - context: torch.Tensor, the context tensor from the CLIP model.
+        - Image.Image: The generated image.
         """
         self.eval()  # Set the model to evaluation mode
         with torch.no_grad():  # Ensure no gradients are calculated

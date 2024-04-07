@@ -1,70 +1,68 @@
-import ldm.utils.model_loader as model_loader
-import ldm.pipeline as pipeline
-from PIL import Image
+"""
+This module performs inference using a pre-trained model to generate images from textual prompts.
+It supports both text-to-image and image-to-image generation, with options to configure the generation process.
+"""
+
 from pathlib import Path
-from transformers import CLIPTokenizer
 import torch
+from PIL import Image
+from transformers import CLIPTokenizer
+from ldm.utils import model_loader
+from ldm import pipeline
 
+# Setup device for model inference
 DEVICE = "cpu"
-
 if torch.cuda.is_available():
     DEVICE = "cuda"
-elif torch.has_mps or torch.backends.mps.is_available():
+elif torch.has_mps() or torch.backends.mps.is_available():
     DEVICE = "mps"
 print(f"Using device: {DEVICE}")
 
-tokenizer = CLIPTokenizer(
+# Load tokenizer and models
+TOKENIZER = CLIPTokenizer(
     "model_weight/vocab.json", merges_file="model_weight/merges.txt"
 )
-model_file = "model_weight/v1-5-pruned-emaonly.ckpt"
-models = model_loader.preload_models_from_standard_weights(model_file, DEVICE)
+MODEL_FILE = "model_weight/v1-5-pruned-emaonly.ckpt"
+MODELS = model_loader.preload_models_from_standard_weights(MODEL_FILE, DEVICE)
 
-# TEXT TO IMAGE
+# Setup for text-to-image generation
+PROMPT = "give me an image of a cat with a hat"
+UNCOND_PROMPT = ""  # Also known as negative prompt
+DO_CFG = True
+CFG_SCALE = 8  # Min: 1, Max: 14
 
-# prompt = "A dog with sunglasses, wearing comfy hat, looking at camera, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution."
-prompt = "give me a image of a cat with a hat"
-uncond_prompt = ""  # Also known as negative prompt
-do_cfg = True
-cfg_scale = 8  # min: 1, max: 14
+# Setup for image-to-image generation
+INPUT_IMAGE = None
+IMAGE_PATH = "../images/dog.jpg"
+# Uncomment the following line to enable image-to-image mode
+# INPUT_IMAGE = Image.open(IMAGE_PATH)
+STRENGTH = 0.9  # Control the deviation from the input image
 
-# IMAGE TO IMAGE
+# Setup for the sampling process
+SAMPLER = "ddpm"
+NUM_INFERENCE_STEPS = 50
+SEED = 1337
 
-input_image = None
-# Comment to disable image to image
-image_path = "../images/dog.jpg"
-# input_image = Image.open(image_path)
-# Higher values means more noise will be added to the input image, so the result will further from the input image.
-# Lower values means less noise is added to the input image, so output
-# will be closer to the input image.
-strength = 0.9
-
-# SAMPLER
-
-sampler = "ddpm"
-num_inference_steps = 50
-seed = 1337
-
+# Generate the image
 output_image = pipeline.generate(
-    prompt=prompt,
-    uncond_prompt=uncond_prompt,
-    input_image=input_image,
-    strength=strength,
-    do_cfg=do_cfg,
-    cfg_scale=cfg_scale,
-    sampler_name=sampler,
-    n_inference_steps=num_inference_steps,
-    seed=seed,
-    models=models,
+    prompt=PROMPT,
+    uncond_prompt=UNCOND_PROMPT,
+    input_image=INPUT_IMAGE,
+    strength=STRENGTH,
+    do_cfg=DO_CFG,
+    cfg_scale=CFG_SCALE,
+    sampler_name=SAMPLER,
+    n_inference_steps=NUM_INFERENCE_STEPS,
+    seed=SEED,
+    models=MODELS,
     device=DEVICE,
     idle_device="cpu",
-    tokenizer=tokenizer,
+    tokenizer=TOKENIZER,
 )
 
-# Combine the input image and the output image into a single image.
+# Process and save the output image
 image = Image.fromarray(output_image)
+SAVE_PATH = Path("image/output.jpg")
+image.save(SAVE_PATH)
 
-save_path = Path("image/output.jpg")
-
-image.save(save_path)
-
-print(f"Image saved to {save_path}")
+print(f"Image saved to {SAVE_PATH}")
