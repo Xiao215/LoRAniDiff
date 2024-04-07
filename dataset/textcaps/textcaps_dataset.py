@@ -44,6 +44,11 @@ if not os.path.exists(os.path.join(TARGET_DATA_DIR, "train")):
     os.remove(os.path.join(TARGET_DATA_DIR, ZIP_FILE))
 
     # Rename the 'train_images' folder to 'train'
-    os.rename(os.path.join(TARGET_DATA_DIR, "train_images"), os.path.join(TARGET_DATA_DIR, "train"))
+    os.rename(
+        os.path.join(TARGET_DATA_DIR, "train_images"),
+        os.path.join(TARGET_DATA_DIR, "train"),
+    )
 else:
-    print("The 'train' folder already exists. Skipping image download, extraction, and renaming.")
+    print(
+        "The 'train' folder already exists. Skipping image download, extraction, and renaming."
+    )

@@ -26,6 +26,7 @@ IMAGE_SIZE = 256  # Corrected to UPPER_CASE
 # Ensure the output directory exists
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+
 def pad_and_resize_image(image, target_size):
     """
     Pads and resizes an image to a square of the target size.
@@ -42,6 +43,7 @@ def pad_and_resize_image(image, target_size):
     padded_image = ImageOps.expand(image, (0, 0, padding[0], padding[1]), fill="black")
     # Resize the padded image
     return padded_image.resize((target_size, target_size))
+
 
 # Load the metadata with specified encoding
 with open(METADATA_PATH, "r", encoding="utf-8") as file:
@@ -88,4 +90,4 @@ if os.path.exists(METADATA_PATH):
     os.remove(METADATA_PATH)
     print(f"Removed file: {METADATA_PATH}")
 
-print('Cleanup successful.')
+print("Cleanup successful.")

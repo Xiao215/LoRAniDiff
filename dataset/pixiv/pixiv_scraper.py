@@ -7,6 +7,7 @@ avoiding downloads of already existing files.
 import os
 import requests  # Moved below standard import 'os' as per PEP 8
 
+
 def download_image_from_url(url: str, download_dir: str) -> None:
     """
     Downloads an image from a given URL into the specified directory.
@@ -35,6 +36,7 @@ def download_image_from_url(url: str, download_dir: str) -> None:
     else:
         print(f"Failed to download {url}. Status code: {response.status_code}")
 
+
 def prompt_for_urls(directory: str, prefix: str) -> None:
     """
     Prompts the user to input image URLs for downloading, until 'done' is entered.
@@ -53,8 +55,11 @@ def prompt_for_urls(directory: str, prefix: str) -> None:
         else:
             print("URL does not match the target prefix. Skipping.")
 
+
 if __name__ == "__main__":
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    BASE_DIR = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
     IMAGE_DIR = os.path.join(BASE_DIR, "data/pixiv/images")
     TARGET_PREFIX = "https://i.pximg.net/c/360x360_70"
 

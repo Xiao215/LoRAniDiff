@@ -12,11 +12,8 @@ def Normalize(in_channels):
 
 class SelfAttention(nn.Module):
     def __init__(
-            self,
-            n_heads: int,
-            d_embed: int,
-            in_proj_bias: bool = True,
-            out_proj_bias=True) -> None:
+        self, n_heads: int, d_embed: int, in_proj_bias: bool = True, out_proj_bias=True
+    ) -> None:
         super().__init__()
         self.n_heads = n_heads
         self.d_embed = d_embed
@@ -34,10 +31,7 @@ class SelfAttention(nn.Module):
 
         self.out_proj = nn.Linear(d_embed, d_embed, bias=out_proj_bias)
 
-    def forward(
-            self,
-            x: torch.Tensor,
-            causal_mask: bool = False) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, causal_mask: bool = False) -> torch.Tensor:
         # x: (Batch_Size, Seq_Length, d_embed)
         h_ = x
 
@@ -150,11 +144,8 @@ class CrossAttention(nn.Module):
 # with images while above deal with sequences.
 class SpatialSelfAttention(nn.Module):
     def __init__(
-            self,
-            n_heads: int,
-            d_embed: int,
-            in_proj_bias: bool = True,
-            out_proj_bias=True) -> None:
+        self, n_heads: int, d_embed: int, in_proj_bias: bool = True, out_proj_bias=True
+    ) -> None:
         super.__init__()
         self.n_heads = n_heads
         self.d_embed = d_embed
@@ -167,20 +158,12 @@ class SpatialSelfAttention(nn.Module):
         # This is the convolutional layer to project the input to the query,
         # key and value.
         self.qkv = nn.Conv2d(
-            d_embed,
-            d_embed * 3,
-            kernel_size=1,
-            stride=1,
-            padding=0,
-            bias=in_proj_bias)
+            d_embed, d_embed * 3, kernel_size=1, stride=1, padding=0, bias=in_proj_bias
+        )
 
         self.out_proj = nn.Conv2d(
-            d_embed,
-            d_embed,
-            kernel_size=1,
-            stride=1,
-            padding=0,
-            bias=out_proj_bias)
+            d_embed, d_embed, kernel_size=1, stride=1, padding=0, bias=out_proj_bias
+        )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x: (Batch_Size, d_embed, Height, Width)

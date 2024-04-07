@@ -10,7 +10,8 @@ import requests
 from zipfile import ZipFile
 from PIL import Image
 
-def download_file(url:str, download_dir:str, filename:str):
+
+def download_file(url: str, download_dir: str, filename: str):
     """
     Downloads a file from a given URL into the specified directory with the specified filename.
     Args:
@@ -27,7 +28,8 @@ def download_file(url:str, download_dir:str, filename:str):
                 f.write(chunk)
     print(f"Downloaded: {file_path}")
 
-def unzip_file(zip_path:str, extract_to:str):
+
+def unzip_file(zip_path: str, extract_to: str):
     """
     Extracts a zip file to a specified directory.
     Args:
@@ -40,7 +42,8 @@ def unzip_file(zip_path:str, extract_to:str):
     os.remove(zip_path)  # Remove the zip file after extraction
     print(f"Removed: {zip_path}")
 
-def resize_images_in_directory(directory:str, size:int):
+
+def resize_images_in_directory(directory: str, size: int):
     """
     Resizes all images in a directory to a specified size.
     Args:
@@ -55,13 +58,22 @@ def resize_images_in_directory(directory:str, size:int):
             img_resized.save(img_path)
             print(f"Resized: {img_file} to size {size} x {size}.")
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Download and optionally resize images.")
-    parser.add_argument("--resize", type=int, default=None,
-                        help="Optional. Resize dimension (square) for images. If not specified, images will not be resized.")
+    parser = argparse.ArgumentParser(
+        description="Download and optionally resize images."
+    )
+    parser.add_argument(
+        "--resize",
+        type=int,
+        default=None,
+        help="Optional. Resize dimension (square) for images. If not specified, images will not be resized.",
+    )
 
     args = parser.parse_args()
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    BASE_DIR = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
     DOWNLOAD_DIR = os.path.join(BASE_DIR, "data/pixiv")
 
     IMAGE_ZIP_URL = "https://huggingface.co/datasets/Xiao215/pixiv-image-with-caption/resolve/main/pixiv_images.zip?download=true"
@@ -72,4 +84,6 @@ if __name__ == "__main__":
     download_file(PARQUET_URL, DOWNLOAD_DIR, "pixiv_image_caption.parquet")
 
     if args.resize is not None:
-        resize_images_in_directory(os.path.join(DOWNLOAD_DIR, "pixiv_images"), args.resize)
+        resize_images_in_directory(
+            os.path.join(DOWNLOAD_DIR, "pixiv_images"), args.resize
+        )

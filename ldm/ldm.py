@@ -17,12 +17,14 @@ from ldm.model.decoder import VAE_Decoder
 from ldm.model.diffusion import Diffusion
 from ldm.module.ddpm import DDPMSampler
 
+
 class LoRAniDiff(nn.Module):
     """
     LoRAniDiff model integrates various components for generating images from text prompts.
     It can be conditioned on text input to generate relevant images or perform modifications
     on existing images to align them with given text prompts.
     """
+
     def __init__(
         self,
         tokenizer: PreTrainedTokenizer,
@@ -45,7 +47,9 @@ class LoRAniDiff(nn.Module):
 
         if model_file is not None:
             # Assuming model_loader can preload models given a file
-            models = model_loader.preload_models_from_standard_weights(model_file, device)
+            models = model_loader.preload_models_from_standard_weights(
+                model_file, device
+            )
             self.encoder = models["encoder"].to(device)
             self.decoder = models["decoder"].to(device)
             self.diffusion = models["diffusion"].to(device)
@@ -87,11 +91,7 @@ class LoRAniDiff(nn.Module):
         batch_size = len(prompt)
         # Assume that the unconditional prompt is the same for all samples in
         # the batch, which is empty
-        latents_shape = (
-            batch_size,
-            4,
-            self.latents_height,
-            self.latents_width)
+        latents_shape = (batch_size, 4, self.latents_height, self.latents_width)
 
         context = None
         if do_cfg:
@@ -135,16 +135,14 @@ class LoRAniDiff(nn.Module):
             )
 
         for timestep in sampler.timesteps:
-            time_embedding = LoRAniDiff.get_time_embedding(
-                timestep).to(self.device)
+            time_embedding = LoRAniDiff.get_time_embedding(timestep).to(self.device)
             model_input = latents
             if do_cfg:
                 model_input = model_input.repeat(2, 1, 1, 1)
             model_output = self.diffusion(model_input, context, time_embedding)
             if do_cfg:
                 output_cond, output_uncond = model_output.chunk(2)
-                model_output = cfg_scale * \
-                    (output_cond - output_uncond) + output_uncond
+                model_output = cfg_scale * (output_cond - output_uncond) + output_uncond
             latents = sampler.step(timestep, latents, model_output)
         print(f"latents: {latents}")
         print(f"decode latent: {self.decoder(latents)}")
@@ -163,9 +161,7 @@ class LoRAniDiff(nn.Module):
             10000, -torch.arange(start=0, end=160, dtype=torch.float32) / 160
         )
         # Shape: (1, 160)
-        x = torch.tensor(
-            [timestep], dtype=torch.float32)[
-            :, None] * freqs[None]
+        x = torch.tensor([timestep], dtype=torch.float32)[:, None] * freqs[None]
         # Shape: (1, 160 * 2)
         return torch.cat([torch.cos(x), torch.sin(x)], dim=-1)
 
@@ -209,8 +205,7 @@ class LoRAniDiff(nn.Module):
             torch.sum(image_features * text_features_uncond, dim=-1)
         )
 
-        clip_loss = clip_loss_cond - cfg_scale * \
-            (clip_loss_cond - clip_loss_uncond)
+        clip_loss = clip_loss_cond - cfg_scale * (clip_loss_cond - clip_loss_uncond)
 
         total_loss = (1 - self.alpha) * rec_loss + self.alpha * clip_loss
         return total_loss
@@ -237,8 +232,7 @@ class LoRAniDiff(nn.Module):
         with torch.no_grad():  # Ensure no gradients are calculated
             captions = [caption]  # Encapsulate the caption in a list
             if input_image is not None:
-                if len(
-                        input_image.shape) == 3:  # If single image, add batch dimension
+                if len(input_image.shape) == 3:  # If single image, add batch dimension
                     input_image = input_image.unsqueeze(0)
                 input_image = input_image.to(
                     self.device

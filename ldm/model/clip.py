@@ -10,8 +10,10 @@ from torch import nn
 from torch.nn import functional as F
 from ldm.module.attention import SelfAttention
 
+
 class CLIPEmbedding(nn.Module):
     """Defines the embedding layer used in CLIP for encoding token and positional information."""
+
     def __init__(self, n_vocab: int, n_embd: int, n_token: int):
         super().__init__()
         self.token_embedding = nn.Embedding(n_vocab, n_embd)
@@ -22,8 +24,10 @@ class CLIPEmbedding(nn.Module):
         token_embeddings = self.token_embedding(tokens)
         return token_embeddings + self.position_embedding
 
+
 class CLIPLayer(nn.Module):
     """Implements a single layer of the CLIP model, consisting of a self-attention mechanism and feedforward neural network."""
+
     def __init__(self, n_head: int, n_embd: int):
         super().__init__()
         self.layernorm_1 = nn.LayerNorm(n_embd)
@@ -47,9 +51,17 @@ class CLIPLayer(nn.Module):
 
         return x
 
+
 class CLIP(nn.Module):
     """The CLIP model, combining embeddings and multiple transformer layers for processing text input."""
-    def __init__(self, n_vocab: int = 49408, n_embd: int = 768, n_layers: int = 12, n_token: int = 77):
+
+    def __init__(
+        self,
+        n_vocab: int = 49408,
+        n_embd: int = 768,
+        n_layers: int = 12,
+        n_token: int = 77,
+    ):
         super().__init__()
         self.embedding = CLIPEmbedding(n_vocab, n_embd, n_token)
         self.layers = nn.ModuleList([CLIPLayer(12, n_embd) for _ in range(n_layers)])

@@ -47,10 +47,7 @@ model.load_state_dict(torch.load(PT_FILE, map_location=DEVICE))
 
 # Perform the generation
 output_image = model.generate(
-    prompt=PROMPT,
-    input_image=INPUT_IMAGE,
-    strength=STRENGTH,
-    cfg_scale=CFG_SCALE
+    prompt=PROMPT, input_image=INPUT_IMAGE, strength=STRENGTH, cfg_scale=CFG_SCALE
 )
 
 # Save the generated image

@@ -17,11 +17,15 @@ IMAGE_DIR = os.path.join(BASE_DIR, "data/pixiv/images")
 CACHE_DIR = os.path.join(BASE_DIR, "llava_cache/")
 
 # Model and processor initialization
-processor = LlavaNextProcessor.from_pretrained("llava-hf/llava-v1.6-mistral-7b-hf", cache_dir=CACHE_DIR)
-model = LlavaNextForConditionalGeneration.from_pretrained("llava-hf/llava-v1.6-mistral-7b-hf",
-                                                          torch_dtype=torch.float16,
-                                                          low_cpu_mem_usage=True,
-                                                          cache_dir=CACHE_DIR)
+processor = LlavaNextProcessor.from_pretrained(
+    "llava-hf/llava-v1.6-mistral-7b-hf", cache_dir=CACHE_DIR
+)
+model = LlavaNextForConditionalGeneration.from_pretrained(
+    "llava-hf/llava-v1.6-mistral-7b-hf",
+    torch_dtype=torch.float16,
+    low_cpu_mem_usage=True,
+    cache_dir=CACHE_DIR,
+)
 model.to("cuda:0")
 
 # Caption prompt setup

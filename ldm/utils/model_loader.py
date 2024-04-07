@@ -8,7 +8,9 @@ import ldm.utils.model_converter as model_converter
 
 
 def preload_models_from_standard_weights(
-        ckpt_path: str, device: torch.device,):
+    ckpt_path: str,
+    device: torch.device,
+):
     state_dict = model_converter.load_from_standard_weights(ckpt_path, device)
 
     encoder = VAE_Encoder().to(device)

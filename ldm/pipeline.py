@@ -54,8 +54,7 @@ def generate(
                 [prompt], padding="max_length", max_length=77
             ).input_ids
             # (Batch_Size, Seq_Len)
-            cond_tokens = torch.tensor(
-                cond_tokens, dtype=torch.long, device=device)
+            cond_tokens = torch.tensor(cond_tokens, dtype=torch.long, device=device)
             # (Batch_Size, Seq_Len) -> (Batch_Size, Seq_Len, Dim)
             cond_context = clip(cond_tokens)
             # Convert into a list of length Seq_Len=77
@@ -63,8 +62,7 @@ def generate(
                 [uncond_prompt], padding="max_length", max_length=77
             ).input_ids
             # (Batch_Size, Seq_Len)
-            uncond_tokens = torch.tensor(
-                uncond_tokens, dtype=torch.long, device=device)
+            uncond_tokens = torch.tensor(uncond_tokens, dtype=torch.long, device=device)
             # (Batch_Size, Seq_Len) -> (Batch_Size, Seq_Len, Dim)
             uncond_context = clip(uncond_tokens)
             # (Batch_Size, Seq_Len, Dim) + (Batch_Size, Seq_Len, Dim) -> (2 * Batch_Size, Seq_Len, Dim)
@@ -121,10 +119,7 @@ def generate(
             to_idle(encoder)
         else:
             # (Batch_Size, 4, Latents_Height, Latents_Width)
-            latents = torch.randn(
-                latents_shape,
-                generator=generator,
-                device=device)
+            latents = torch.randn(latents_shape, generator=generator, device=device)
 
         diffusion = models["diffusion"]
         diffusion.to(device)
@@ -147,8 +142,7 @@ def generate(
 
             if do_cfg:
                 output_cond, output_uncond = model_output.chunk(2)
-                model_output = cfg_scale * \
-                    (output_cond - output_uncond) + output_uncond
+                model_output = cfg_scale * (output_cond - output_uncond) + output_uncond
 
             # (Batch_Size, 4, Latents_Height, Latents_Width) -> (Batch_Size, 4, Latents_Height, Latents_Width)
             latents = sampler.step(timestep, latents, model_output)
@@ -181,8 +175,7 @@ def rescale(x, old_range, new_range, clamp=False):
 
 def get_time_embedding(timestep):
     # Shape: (160,)
-    freqs = torch.pow(10000, -torch.arange(start=0,
-                      end=160, dtype=torch.float32) / 160)
+    freqs = torch.pow(10000, -torch.arange(start=0, end=160, dtype=torch.float32) / 160)
     # Shape: (1, 160)
     x = torch.tensor([timestep], dtype=torch.float32)[:, None] * freqs[None]
     # Shape: (1, 160 * 2)
