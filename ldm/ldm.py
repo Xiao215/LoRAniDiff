@@ -40,10 +40,9 @@ class LoRAniDiff(nn.Module):
             self.generator.manual_seed(seed)
         self.tokenizer = tokenizer
 
-    def forward(self, prompt, images=None, uncond_prompt=[""], do_cfg=True, cfg_scale=7.5,strength=0.8):
+    def forward(self, prompt, uncond_prompt, images=None, do_cfg=True, cfg_scale=7.5,strength=0.8):
         batch_size = len(prompt)
         # Assume that the unconditional prompt is the same for all samples in the batch, which is empty
-        uncond_prompt = uncond_prompt * batch_size
         latents_shape = (batch_size, 4, self.LATENTS_HEIGHT, self.LATENTS_WIDTH)
 
         context = None
@@ -88,7 +87,7 @@ class LoRAniDiff(nn.Module):
         images = images.permute(0, 2, 3, 1)
         images = images.to("cpu", torch.uint8).numpy()
         print(f'image: {images[0]}')
-        return images[0], context
+        return images[0], context, uncond_context
 
     @staticmethod
     def get_time_embedding(timestep):
@@ -111,15 +110,21 @@ class LoRAniDiff(nn.Module):
         return x
 
 
-    def compute_loss(self, generated_images, target_images, text_embeddings):
+    def compute_loss(self, generated_images, target_images, text_embeddings_cond, text_embeddings_uncond, cfg_scale):
         rec_loss = F.mse_loss(generated_images, target_images)
         generated_images = (generated_images + 1) / 2.0
         generated_images = generated_images.clamp(0, 1)
+
         image_features = self.clip.encode_image(generated_images).float()
         image_features = F.normalize(image_features, dim=-1)
-        text_embeddings = F.normalize(text_embeddings, dim=-1)
-        similarity = torch.sum(image_features * text_embeddings, dim=-1)
-        clip_loss = -torch.mean(similarity)
+        text_features_cond = F.normalize(text_embeddings_cond, dim=-1)
+        text_features_uncond = F.normalize(text_embeddings_uncond, dim=-1)
+
+        clip_loss_cond = -torch.mean(torch.sum(image_features * text_features_cond, dim=-1))
+        clip_loss_uncond = -torch.mean(torch.sum(image_features * text_features_uncond, dim=-1))
+
+        clip_loss = clip_loss_cond - cfg_scale * (clip_loss_cond - clip_loss_uncond)
+
         total_loss = (1 - self.alpha) * rec_loss + self.alpha * clip_loss
         return total_loss
 
@@ -144,7 +149,7 @@ class LoRAniDiff(nn.Module):
                     input_image = input_image.unsqueeze(0)
                 input_image = input_image.to(self.device)  # Ensure the image is on the correct device
             # Generate the image
-            generated_image, _ = self.forward(images=input_image, prompt=captions, strength=strength)
+            generated_image, _, _ = self.forward(uncond_prompt=[""], images=input_image, prompt=captions, strength=strength)
             image = Image.fromarray(generated_image)
             print(f"Image generated successfully.")
             print(f"Image size: {image.size}")

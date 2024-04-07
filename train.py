@@ -13,16 +13,13 @@ from torch.utils.data.dataset import random_split
 
 WIDTH = 512
 HEIGHT = 512
-LATENTS_WIDTH = WIDTH // 8
-LATENTS_HEIGHT = HEIGHT // 8
 
 # Hyperparameters
 learning_rate = 1e-4
-batch_size = 16
+batch_size = 2
 epochs = 10
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 alpha = 0.5  # Weight between reconstruction and CLIP-guided losses
-n_inference_steps=50
 
 seed = 1337
 generator = torch.Generator(device=device)
@@ -69,6 +66,7 @@ class TextCapsDataset(Dataset):
 
 # Define your transformations, e.g., ToTensor
 transform = transforms.Compose([
+    transforms.Resize((HEIGHT, WIDTH)),
     transforms.ToTensor(),
 ])
 
@@ -80,10 +78,10 @@ val_size = len(dataset) - train_size
 train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
 
 # Use DataLoader to handle batching
-train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=4)
-val_loader = DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=4)
+train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
 
-model = LoRAniDiff(device, model_file=model_file).to(device)
+model = LoRAniDiff(device, model_file=model_file, width=WIDTH, height=HEIGHT).to(device)
 model.load_state_dict(torch.load(pt_file, map_location=device))
 print(f'Number of GPU is: {torch.cuda.device_count()}')
 if torch.cuda.device_count() > 1:
@@ -112,20 +110,29 @@ print("Training...")
 accumulation_steps = 0
 for epoch in range(epochs):
     model.train()  # Set model to training mode
+    total_loss = 0
+
     for i, batch in enumerate(tqdm(train_loader)):
         print(f'iter: {i}')
         images = batch['image'].to(device)
         captions = batch['caption']
+        uncond_prompt = [""] * len(captions)
         print(f'images: {images.size()}')
         print(f'captions: {captions}')
-        generated_images, text_embeddings = model(images, captions, tokenizer)
-        print(f'generated_images: {generated_images.size()}')
+        generated_images, text_embeddings, _ = model(images, captions, uncond_prompt)
 
+        print(f'generated_images: {generated_images.size()}')
+        # TODO!!!
         loss = model.compute_loss(generated_images, images, text_embeddings)
+        total_loss += loss.item()
         loss.backward()
         if (i + 1) % accumulation_steps == 0:
             optimizer.step()  # Update weights
             optimizer.zero_grad()
+
+
+    avg_loss = total_loss / len(train_loader)
+    print(f'Epoch [{epoch+1}/{epochs}], Training Loss: {avg_loss:.4f}')
 
     # Evaluation after each epoch
     val_loss = evaluate_model(model, val_loader, device)
