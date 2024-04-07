@@ -17,7 +17,6 @@ from ldm.model.decoder import VAE_Decoder
 from ldm.model.diffusion import Diffusion
 from ldm.module.ddpm import DDPMSampler
 
-
 class LoRAniDiff(nn.Module):
     """
     LoRAniDiff model integrates various components for generating images from text prompts.
@@ -121,6 +120,7 @@ class LoRAniDiff(nn.Module):
 
         sampler = DDPMSampler(self.generator)
         sampler.set_inference_timesteps(self.n_inference_steps)
+
         latents = None
         if images is not None:
             encoder_noise = torch.randn(
@@ -144,14 +144,12 @@ class LoRAniDiff(nn.Module):
                 output_cond, output_uncond = model_output.chunk(2)
                 model_output = cfg_scale * (output_cond - output_uncond) + output_uncond
             latents = sampler.step(timestep, latents, model_output)
-        print(f"latents: {latents}")
-        print(f"decode latent: {self.decoder(latents)}")
+        images = self.decoder(latents)
         images = LoRAniDiff.rescale(
-            self.decoder(latents), (-1, 1), (0, 255), clamp=True
+            images, (-1, 1), (0, 255), clamp=True
         )
         images = images.permute(0, 2, 3, 1)
         images = images.to("cpu", torch.uint8).numpy()
-        print(f"image: {images[0]}")
         return images[0], context, uncond_context
 
     @staticmethod
@@ -215,6 +213,7 @@ class LoRAniDiff(nn.Module):
         caption: str,
         input_image: torch.Tensor | None = None,
         strength: float = 0.8,
+        cfg_scale: float = 7.5
     ) -> Image.Image:
         """
         Generates an image based on the provided text caption and optional input image for
@@ -243,10 +242,7 @@ class LoRAniDiff(nn.Module):
                 images=input_image,
                 prompt=captions,
                 strength=strength,
+                cfg_scale=cfg_scale
             )
             image = Image.fromarray(generated_image)
-            print(f"Image generated successfully.")
-            print(f"Image size: {image.size}")
-            print(f"image: {image}")
-
         return image

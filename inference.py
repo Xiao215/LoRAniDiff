@@ -59,7 +59,6 @@ output_image = pipeline.generate(
     idle_device="cpu",
     tokenizer=TOKENIZER,
 )
-
 # Process and save the output image
 image = Image.fromarray(output_image)
 SAVE_DIR = Path("image")  # Define the directory to save the image

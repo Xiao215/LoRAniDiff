@@ -25,11 +25,10 @@ TOKENIZER = CLIPTokenizer(
 )
 
 # Define file paths for the model weights
-MODEL_FILE = "model_weight/v1-5-pruned-emaonly.ckpt"
 PT_FILE = "model_weight/LoRAniDiff.pt"
 
 # Define the prompt and configuration for the generation process
-PROMPT = "give me an image of a cat with a hat"
+PROMPT = "A pink hair girl stretching on the floor, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution."
 CFG_SCALE = 8  # Scale for conditional guidance, min: 1, max: 14
 
 # Image to image configuration
@@ -47,7 +46,7 @@ model.load_state_dict(torch.load(PT_FILE, map_location=DEVICE))
 
 # Perform the generation
 output_image = model.generate(
-    prompt=PROMPT, input_image=INPUT_IMAGE, strength=STRENGTH, cfg_scale=CFG_SCALE
+    caption=PROMPT, input_image=INPUT_IMAGE, strength=STRENGTH, cfg_scale=CFG_SCALE
 )
 
 # Save the generated image
