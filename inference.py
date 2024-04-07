@@ -9,11 +9,13 @@ DEVICE = "cpu"
 
 if torch.cuda.is_available():
     DEVICE = "cuda"
-elif (torch.has_mps or torch.backends.mps.is_available()):
+elif torch.has_mps or torch.backends.mps.is_available():
     DEVICE = "mps"
 print(f"Using device: {DEVICE}")
 
-tokenizer = CLIPTokenizer("model_weight/vocab.json", merges_file="model_weight/merges.txt")
+tokenizer = CLIPTokenizer(
+    "model_weight/vocab.json", merges_file="model_weight/merges.txt"
+)
 model_file = "model_weight/v1-5-pruned-emaonly.ckpt"
 models = model_loader.preload_models_from_standard_weights(model_file, DEVICE)
 

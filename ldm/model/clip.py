@@ -3,6 +3,7 @@ from torch import nn
 from torch.nn import functional as F
 from ldm.module.attention import SelfAttention
 
+
 class CLIPEmbedding(nn.Module):
     def __init__(self, n_vocab: int, n_embd: int, n_token: int):
         super().__init__()
@@ -18,6 +19,7 @@ class CLIPEmbedding(nn.Module):
         x += self.position_embedding
 
         return x
+
 
 class CLIPLayer(nn.Module):
     def __init__(self, n_head: int, n_embd: int):
@@ -59,7 +61,7 @@ class CLIPLayer(nn.Module):
         x = self.linear_1(x)
 
         # (Batch_Size, Seq_Len, 4 * Dim) -> (Batch_Size, Seq_Len, 4 * Dim)
-        x = x * torch.sigmoid(1.702 * x)   # QuickGELU activation function
+        x = x * torch.sigmoid(1.702 * x)  # QuickGELU activation function
 
         # (Batch_Size, Seq_Len, 4 * Dim) -> (Batch_Size, Seq_Len, Dim)
         x = self.linear_2(x)
@@ -69,14 +71,13 @@ class CLIPLayer(nn.Module):
 
         return x
 
+
 class CLIP(nn.Module):
     def __init__(self):
         super().__init__()
         self.embedding = CLIPEmbedding(49408, 768, 77)
 
-        self.layers = nn.ModuleList([
-            CLIPLayer(12, 768) for i in range(12)
-        ])
+        self.layers = nn.ModuleList([CLIPLayer(12, 768) for i in range(12)])
 
         self.layernorm = nn.LayerNorm(768)
 

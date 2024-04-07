@@ -5,15 +5,18 @@ from pathlib import Path
 from transformers import CLIPTokenizer
 import torch
 from ldm.ldm import LoRAniDiff
+
 DEVICE = "cpu"
 
 if torch.cuda.is_available():
     DEVICE = "cuda"
-elif (torch.has_mps or torch.backends.mps.is_available()):
+elif torch.has_mps or torch.backends.mps.is_available():
     DEVICE = "mps"
 print(f"Using device: {DEVICE}")
 
-tokenizer = CLIPTokenizer("model_weight/vocab.json", merges_file="model_weight/merges.txt")
+tokenizer = CLIPTokenizer(
+    "model_weight/vocab.json", merges_file="model_weight/merges.txt"
+)
 model_file = "model_weight/v1-5-pruned-emaonly.ckpt"
 pt_file = "model_weight/LoRAniDiff.pt"
 

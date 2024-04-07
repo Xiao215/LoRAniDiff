@@ -5,10 +5,13 @@ from ldm.model.decoder import VAE_AttentionBlock, VAE_ResidualBlock
 
 
 def Normalize(in_channels):
-    return torch.nn.GroupNorm(num_groups=32, num_channels=in_channels, eps=1e-6, affine=True)
+    return torch.nn.GroupNorm(
+        num_groups=32, num_channels=in_channels, eps=1e-6, affine=True
+    )
+
 
 class DownsampleBlock(nn.Module):
-    def __init__(self, in_channels: int, stride:int = 2) -> None:
+    def __init__(self, in_channels: int, stride: int = 2) -> None:
         """This is the downsample block for the Encoder. It will downsample the input by a factor of 2. (W/=2, H/=2)
 
         Args:
@@ -22,15 +25,26 @@ class DownsampleBlock(nn.Module):
         super().__init__()
         self.in_channels = in_channels
         # This is the CNN layer to downsample the input.
-        self.conv = nn.Conv2d(in_channels, in_channels, kernel_size=3, stride=2, padding=0)
+        self.conv = nn.Conv2d(
+            in_channels, in_channels, kernel_size=3, stride=2, padding=0
+        )
 
     def forward(self, x):
         # Since the stide is 2, a padding will be added to the input.
         pad = (0, 1, 0, 1)
         x = F.pad(x, pad, mode="constant", value=0)
 
+
 class VAE_Encoder(nn.Module):
-    def __init__(self, ch: int = 128, ch_mult: tuple[int] = (1, 2, 4, 8), num_res_blocks: int = 2, dropout:float=0.0, in_channels:int = 3, z_channels:int = 4) -> None:
+    def __init__(
+        self,
+        ch: int = 128,
+        ch_mult: tuple[int] = (1, 2, 4, 8),
+        num_res_blocks: int = 2,
+        dropout: float = 0.0,
+        in_channels: int = 3,
+        z_channels: int = 4,
+    ) -> None:
         """This is the encoder class for the LDM model.
 
         Args:
@@ -53,41 +67,52 @@ class VAE_Encoder(nn.Module):
         self.dropout = dropout
 
         # downsampling
-        self.conv_in = torch.nn.Conv2d(self.in_channels, self.ch, kernel_size=3, stride=1, padding=1)
+        self.conv_in = torch.nn.Conv2d(
+            self.in_channels, self.ch, kernel_size=3, stride=1, padding=1
+        )
 
         # in channel multiplier
-        in_ch_mult = (1,)+tuple(ch_mult)
+        in_ch_mult = (1,) + tuple(ch_mult)
         self.down = nn.ModuleList()
 
         block_in = None
         block_out = None
         for level_idx in range(len(ch_mult)):
             down = nn.Module()
-            block_in = ch*in_ch_mult[level_idx]
-            block_out = ch*ch_mult[level_idx]
+            block_in = ch * in_ch_mult[level_idx]
+            block_out = ch * ch_mult[level_idx]
 
             # Add a downsample block to the list.
             down.downsample = DownsampleBlock(block_in, stride=2)
             residualBlock = nn.ModuleList()
             for _ in range(num_res_blocks):
-                residualBlock.append(VAE_ResidualBlock(in_ch=block_in, out_ch=block_out, dropout=dropout))
+                residualBlock.append(
+                    VAE_ResidualBlock(in_ch=block_in, out_ch=block_out, dropout=dropout)
+                )
                 block_in = block_out
             down.residualBlock = residualBlock
 
         # middle
         self.mid = nn.Module()
-        self.mid.residual_1 = VAE_ResidualBlock(in_ch=block_in, out_ch=block_in, dropout=dropout)
+        self.mid.residual_1 = VAE_ResidualBlock(
+            in_ch=block_in, out_ch=block_in, dropout=dropout
+        )
         self.mid.attention = VAE_AttentionBlock(channels=block_in)
-        self.mid.residual_2 = VAE_ResidualBlock(in_ch=block_in, out_ch=block_in, dropout=dropout)
+        self.mid.residual_2 = VAE_ResidualBlock(
+            in_ch=block_in, out_ch=block_in, dropout=dropout
+        )
 
         # end
         self.norm = Normalize(block_in)
 
         # We could also try sigmoid below?
         self.activation = torch.nn.SiLU()
-        self.conv_out = torch.nn.Conv2d(block_in, 2*self.z_channels, kernel_size=3, stride=1, padding=1)
+        self.conv_out = torch.nn.Conv2d(
+            block_in, 2 * self.z_channels, kernel_size=3, stride=1, padding=1
+        )
         self.quant_cov = torch.nn.Conv2d(
-            2*self.z_channels, 2*self.z_channels, kernel_size=1)
+            2 * self.z_channels, 2 * self.z_channels, kernel_size=1
+        )
 
     def forward(self, x: torch.Tensor, noise: torch.Tensor) -> torch.Tensor:
         """This is the forward function for the encoder.
