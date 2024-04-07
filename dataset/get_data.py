@@ -11,11 +11,7 @@ def main():
         .lower()
     )
 
-    base_dir = os.path.join(
-        os.path.dirname(
-            os.path.dirname(
-                os.path.dirname(
-                    os.path.abspath(__file__)))))
+    base_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
     if choice == "pixiv" or choice == "p":
         dataset_dir = os.path.join(base_dir, "data/pixiv")
@@ -32,17 +28,14 @@ def main():
             .lower()
         )
         pixiv_script_path = os.path.join(
-            os.path.dirname(
-                os.path.abspath(__file__)),
-            "pixiv",
-            "pixiv_dataset.py")
+            os.path.dirname(os.path.abspath(__file__)), "pixiv", "pixiv_dataset.py"
+        )
 
         if resize == "yes" or resize == "y":
             size = input(
                 "Enter the size to which you want the images resized (e.g., 512): "
             ).strip()
-            subprocess.run(["python3", pixiv_script_path,
-                           "--resize", size], check=True)
+            subprocess.run(["python3", pixiv_script_path, "--resize", size], check=True)
         elif resize == "no" or resize == "n" or resize == "":
             subprocess.run(["python3", pixiv_script_path], check=True)
         else:
@@ -57,10 +50,8 @@ def main():
             )
             return
         textcaps_script_path = os.path.join(
-            os.path.dirname(
-                os.path.abspath(__file__)),
-            "textcaps",
-            "textcaps.sh")
+            os.path.dirname(os.path.abspath(__file__)), "textcaps", "textcaps.sh"
+        )
         subprocess.run([textcaps_script_path], shell=True, check=True)
     else:
         print("Invalid choice. Please enter 'pixiv (p)' or 'textcaps or (t)'.")

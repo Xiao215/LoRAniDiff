@@ -8,19 +8,20 @@ from ldm.model.decoder import VAE_Decoder
 from ldm.model.diffusion import Diffusion
 from ldm.module.ddpm import DDPMSampler
 from PIL import Image
+from transformers import PreTrainedTokenizer
 
 
 class LoRAniDiff(nn.Module):
     def __init__(
         self,
-        tokenizer,
-        device,
-        alpha=0.5,
-        model_file=None,
-        n_inference_steps=50,
-        seed=None,
-        width=512,
-        height=512,
+        tokenizer: PreTrainedTokenizer,
+        device: torch.device,
+        alpha: float = 0.5,
+        model_file: str | None = None,
+        n_inference_steps: int = 50,
+        seed: int | None = None,
+        width: int = 512,
+        height: int = 512,
     ):
         super(LoRAniDiff, self).__init__()
         self.alpha = alpha
@@ -54,24 +55,21 @@ class LoRAniDiff(nn.Module):
 
     def forward(
         self,
-        prompt,
-        uncond_prompt,
-        images=None,
-        do_cfg=True,
-        cfg_scale=7.5,
-        strength=0.8,
-    ):
+        prompt: list[str],
+        uncond_prompt: list[str],
+        images: torch.Tensor | None = None,
+        do_cfg: bool = True,
+        cfg_scale: float = 7.5,
+        strength: float = 0.8,
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         batch_size = len(prompt)
         # Assume that the unconditional prompt is the same for all samples in
         # the batch, which is empty
-        latents_shape = (
-            batch_size,
-            4,
-            self.LATENTS_HEIGHT,
-            self.LATENTS_WIDTH)
+        latents_shape = (batch_size, 4, self.LATENTS_HEIGHT, self.LATENTS_WIDTH)
 
         context = None
         if do_cfg:
+            print(prompt)
             cond_tokens = self.tokenizer.batch_encode_plus(
                 prompt, padding="max_length", max_length=77
             ).input_ids
@@ -111,16 +109,14 @@ class LoRAniDiff(nn.Module):
             )
 
         for timestep in sampler.timesteps:
-            time_embedding = LoRAniDiff.get_time_embedding(
-                timestep).to(self.device)
+            time_embedding = LoRAniDiff.get_time_embedding(timestep).to(self.device)
             model_input = latents
             if do_cfg:
                 model_input = model_input.repeat(2, 1, 1, 1)
             model_output = self.diffusion(model_input, context, time_embedding)
             if do_cfg:
                 output_cond, output_uncond = model_output.chunk(2)
-                model_output = cfg_scale * \
-                    (output_cond - output_uncond) + output_uncond
+                model_output = cfg_scale * (output_cond - output_uncond) + output_uncond
             latents = sampler.step(timestep, latents, model_output)
         print(f"latents: {latents}")
         print(f"decode latent: {self.decoder(latents)}")
@@ -133,20 +129,23 @@ class LoRAniDiff(nn.Module):
         return images[0], context, uncond_context
 
     @staticmethod
-    def get_time_embedding(timestep):
+    def get_time_embedding(timestep: int) -> torch.Tensor:
         # Shape: (160,)
         freqs = torch.pow(
             10000, -torch.arange(start=0, end=160, dtype=torch.float32) / 160
         )
         # Shape: (1, 160)
-        x = torch.tensor(
-            [timestep], dtype=torch.float32)[
-            :, None] * freqs[None]
+        x = torch.tensor([timestep], dtype=torch.float32)[:, None] * freqs[None]
         # Shape: (1, 160 * 2)
         return torch.cat([torch.cos(x), torch.sin(x)], dim=-1)
 
     @staticmethod
-    def rescale(x, old_range, new_range, clamp=False):
+    def rescale(
+        x: torch.Tensor,
+        old_range: tuple[float, float],
+        new_range: tuple[float, float],
+        clamp: bool = False,
+    ) -> torch.Tensor:
         old_min, old_max = old_range
         new_min, new_max = new_range
         x -= old_min
@@ -158,12 +157,12 @@ class LoRAniDiff(nn.Module):
 
     def compute_loss(
         self,
-        generated_images,
-        target_images,
-        text_embeddings_cond,
-        text_embeddings_uncond,
-        cfg_scale,
-    ):
+        generated_images: torch.Tensor,
+        target_images: torch.Tensor,
+        text_embeddings_cond: torch.Tensor,
+        text_embeddings_uncond: torch.Tensor,
+        cfg_scale: float,
+    ) -> torch.Tensor:
         rec_loss = F.mse_loss(generated_images, target_images)
         generated_images = (generated_images + 1) / 2.0
         generated_images = generated_images.clamp(0, 1)
@@ -180,13 +179,17 @@ class LoRAniDiff(nn.Module):
             torch.sum(image_features * text_features_uncond, dim=-1)
         )
 
-        clip_loss = clip_loss_cond - cfg_scale * \
-            (clip_loss_cond - clip_loss_uncond)
+        clip_loss = clip_loss_cond - cfg_scale * (clip_loss_cond - clip_loss_uncond)
 
         total_loss = (1 - self.alpha) * rec_loss + self.alpha * clip_loss
         return total_loss
 
-    def generate(self, caption, input_image=None, strength=0.8):
+    def generate(
+        self,
+        caption: str,
+        input_image: torch.Tensor | None = None,
+        strength: float = 0.8,
+    ) -> Image.Image:
         """
         Generate an image based on a caption, and optionally, an initial image.
 
@@ -203,8 +206,7 @@ class LoRAniDiff(nn.Module):
         with torch.no_grad():  # Ensure no gradients are calculated
             captions = [caption]  # Encapsulate the caption in a list
             if input_image is not None:
-                if len(
-                        input_image.shape) == 3:  # If single image, add batch dimension
+                if len(input_image.shape) == 3:  # If single image, add batch dimension
                     input_image = input_image.unsqueeze(0)
                 input_image = input_image.to(
                     self.device

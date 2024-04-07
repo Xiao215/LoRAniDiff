@@ -1,14 +1,12 @@
 import torch
 
 
-def load_from_standard_weights(
-        input_file: str, device: str) -> dict[str, torch.Tensor]:
+def load_from_standard_weights(input_file: str, device: str) -> dict[str, torch.Tensor]:
     # Taken from:
     # https://github.com/kjsman/stable-diffusion-pytorch/issues/7#issuecomment-1426839447
-    original_model = torch.load(
-        input_file,
-        map_location=device,
-        weights_only=False)["state_dict"]
+    original_model = torch.load(input_file, map_location=device, weights_only=False)[
+        "state_dict"
+    ]
 
     converted = {}
     converted["diffusion"] = {}
@@ -35,7 +33,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.0.0.bias"
     ]
     converted["diffusion"]["unet.encoders.1.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.input_blocks.1.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.1.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.1.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.input_blocks.1.0.in_layers.0.bias"
     ]
@@ -52,7 +51,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.1.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.encoders.1.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.input_blocks.1.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.1.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.1.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.input_blocks.1.0.out_layers.0.bias"
     ]
@@ -91,9 +91,11 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.ff.net.0.proj.bias"
     ]
     converted["diffusion"]["unet.encoders.1.1.linear_geglu_2.weight"] = original_model[
-        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.ff.net.2.weight"]
+        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.ff.net.2.weight"
+    ]
     converted["diffusion"]["unet.encoders.1.1.linear_geglu_2.bias"] = original_model[
-        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.ff.net.2.bias"]
+        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.ff.net.2.bias"
+    ]
     converted["diffusion"]["unet.encoders.1.1.attention_2.q_proj.weight"] = (
         original_model[
             "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.attn2.to_q.weight"
@@ -120,17 +122,23 @@ def load_from_standard_weights(
         ]
     )
     converted["diffusion"]["unet.encoders.1.1.layernorm_1.weight"] = original_model[
-        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.norm1.weight"]
+        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.norm1.weight"
+    ]
     converted["diffusion"]["unet.encoders.1.1.layernorm_1.bias"] = original_model[
-        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.norm1.bias"]
+        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.norm1.bias"
+    ]
     converted["diffusion"]["unet.encoders.1.1.layernorm_2.weight"] = original_model[
-        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.norm2.weight"]
+        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.norm2.weight"
+    ]
     converted["diffusion"]["unet.encoders.1.1.layernorm_2.bias"] = original_model[
-        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.norm2.bias"]
+        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.norm2.bias"
+    ]
     converted["diffusion"]["unet.encoders.1.1.layernorm_3.weight"] = original_model[
-        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.norm3.weight"]
+        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.norm3.weight"
+    ]
     converted["diffusion"]["unet.encoders.1.1.layernorm_3.bias"] = original_model[
-        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.norm3.bias"]
+        "model.diffusion_model.input_blocks.1.1.transformer_blocks.0.norm3.bias"
+    ]
     converted["diffusion"]["unet.encoders.1.1.conv_output.weight"] = original_model[
         "model.diffusion_model.input_blocks.1.1.proj_out.weight"
     ]
@@ -138,7 +146,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.1.1.proj_out.bias"
     ]
     converted["diffusion"]["unet.encoders.2.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.input_blocks.2.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.2.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.2.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.input_blocks.2.0.in_layers.0.bias"
     ]
@@ -155,7 +164,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.2.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.encoders.2.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.input_blocks.2.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.2.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.2.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.input_blocks.2.0.out_layers.0.bias"
     ]
@@ -194,9 +204,11 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.ff.net.0.proj.bias"
     ]
     converted["diffusion"]["unet.encoders.2.1.linear_geglu_2.weight"] = original_model[
-        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.ff.net.2.weight"]
+        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.ff.net.2.weight"
+    ]
     converted["diffusion"]["unet.encoders.2.1.linear_geglu_2.bias"] = original_model[
-        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.ff.net.2.bias"]
+        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.ff.net.2.bias"
+    ]
     converted["diffusion"]["unet.encoders.2.1.attention_2.q_proj.weight"] = (
         original_model[
             "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.attn2.to_q.weight"
@@ -223,17 +235,23 @@ def load_from_standard_weights(
         ]
     )
     converted["diffusion"]["unet.encoders.2.1.layernorm_1.weight"] = original_model[
-        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.norm1.weight"]
+        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.norm1.weight"
+    ]
     converted["diffusion"]["unet.encoders.2.1.layernorm_1.bias"] = original_model[
-        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.norm1.bias"]
+        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.norm1.bias"
+    ]
     converted["diffusion"]["unet.encoders.2.1.layernorm_2.weight"] = original_model[
-        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.norm2.weight"]
+        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.norm2.weight"
+    ]
     converted["diffusion"]["unet.encoders.2.1.layernorm_2.bias"] = original_model[
-        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.norm2.bias"]
+        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.norm2.bias"
+    ]
     converted["diffusion"]["unet.encoders.2.1.layernorm_3.weight"] = original_model[
-        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.norm3.weight"]
+        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.norm3.weight"
+    ]
     converted["diffusion"]["unet.encoders.2.1.layernorm_3.bias"] = original_model[
-        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.norm3.bias"]
+        "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.norm3.bias"
+    ]
     converted["diffusion"]["unet.encoders.2.1.conv_output.weight"] = original_model[
         "model.diffusion_model.input_blocks.2.1.proj_out.weight"
     ]
@@ -247,7 +265,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.3.0.op.bias"
     ]
     converted["diffusion"]["unet.encoders.4.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.input_blocks.4.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.4.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.4.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.input_blocks.4.0.in_layers.0.bias"
     ]
@@ -264,7 +283,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.4.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.encoders.4.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.input_blocks.4.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.4.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.4.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.input_blocks.4.0.out_layers.0.bias"
     ]
@@ -275,7 +295,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.4.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.encoders.4.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.input_blocks.4.0.skip_connection.weight"]
+        "model.diffusion_model.input_blocks.4.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.encoders.4.0.residual_layer.bias"] = original_model[
         "model.diffusion_model.input_blocks.4.0.skip_connection.bias"
     ]
@@ -308,9 +329,11 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.ff.net.0.proj.bias"
     ]
     converted["diffusion"]["unet.encoders.4.1.linear_geglu_2.weight"] = original_model[
-        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.ff.net.2.weight"]
+        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.ff.net.2.weight"
+    ]
     converted["diffusion"]["unet.encoders.4.1.linear_geglu_2.bias"] = original_model[
-        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.ff.net.2.bias"]
+        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.ff.net.2.bias"
+    ]
     converted["diffusion"]["unet.encoders.4.1.attention_2.q_proj.weight"] = (
         original_model[
             "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.attn2.to_q.weight"
@@ -337,17 +360,23 @@ def load_from_standard_weights(
         ]
     )
     converted["diffusion"]["unet.encoders.4.1.layernorm_1.weight"] = original_model[
-        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.norm1.weight"]
+        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.norm1.weight"
+    ]
     converted["diffusion"]["unet.encoders.4.1.layernorm_1.bias"] = original_model[
-        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.norm1.bias"]
+        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.norm1.bias"
+    ]
     converted["diffusion"]["unet.encoders.4.1.layernorm_2.weight"] = original_model[
-        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.norm2.weight"]
+        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.norm2.weight"
+    ]
     converted["diffusion"]["unet.encoders.4.1.layernorm_2.bias"] = original_model[
-        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.norm2.bias"]
+        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.norm2.bias"
+    ]
     converted["diffusion"]["unet.encoders.4.1.layernorm_3.weight"] = original_model[
-        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.norm3.weight"]
+        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.norm3.weight"
+    ]
     converted["diffusion"]["unet.encoders.4.1.layernorm_3.bias"] = original_model[
-        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.norm3.bias"]
+        "model.diffusion_model.input_blocks.4.1.transformer_blocks.0.norm3.bias"
+    ]
     converted["diffusion"]["unet.encoders.4.1.conv_output.weight"] = original_model[
         "model.diffusion_model.input_blocks.4.1.proj_out.weight"
     ]
@@ -355,7 +384,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.4.1.proj_out.bias"
     ]
     converted["diffusion"]["unet.encoders.5.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.input_blocks.5.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.5.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.5.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.input_blocks.5.0.in_layers.0.bias"
     ]
@@ -372,7 +402,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.5.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.encoders.5.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.input_blocks.5.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.5.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.5.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.input_blocks.5.0.out_layers.0.bias"
     ]
@@ -411,9 +442,11 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.ff.net.0.proj.bias"
     ]
     converted["diffusion"]["unet.encoders.5.1.linear_geglu_2.weight"] = original_model[
-        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.ff.net.2.weight"]
+        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.ff.net.2.weight"
+    ]
     converted["diffusion"]["unet.encoders.5.1.linear_geglu_2.bias"] = original_model[
-        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.ff.net.2.bias"]
+        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.ff.net.2.bias"
+    ]
     converted["diffusion"]["unet.encoders.5.1.attention_2.q_proj.weight"] = (
         original_model[
             "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.attn2.to_q.weight"
@@ -440,17 +473,23 @@ def load_from_standard_weights(
         ]
     )
     converted["diffusion"]["unet.encoders.5.1.layernorm_1.weight"] = original_model[
-        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.norm1.weight"]
+        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.norm1.weight"
+    ]
     converted["diffusion"]["unet.encoders.5.1.layernorm_1.bias"] = original_model[
-        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.norm1.bias"]
+        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.norm1.bias"
+    ]
     converted["diffusion"]["unet.encoders.5.1.layernorm_2.weight"] = original_model[
-        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.norm2.weight"]
+        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.norm2.weight"
+    ]
     converted["diffusion"]["unet.encoders.5.1.layernorm_2.bias"] = original_model[
-        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.norm2.bias"]
+        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.norm2.bias"
+    ]
     converted["diffusion"]["unet.encoders.5.1.layernorm_3.weight"] = original_model[
-        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.norm3.weight"]
+        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.norm3.weight"
+    ]
     converted["diffusion"]["unet.encoders.5.1.layernorm_3.bias"] = original_model[
-        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.norm3.bias"]
+        "model.diffusion_model.input_blocks.5.1.transformer_blocks.0.norm3.bias"
+    ]
     converted["diffusion"]["unet.encoders.5.1.conv_output.weight"] = original_model[
         "model.diffusion_model.input_blocks.5.1.proj_out.weight"
     ]
@@ -464,7 +503,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.6.0.op.bias"
     ]
     converted["diffusion"]["unet.encoders.7.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.input_blocks.7.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.7.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.7.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.input_blocks.7.0.in_layers.0.bias"
     ]
@@ -481,7 +521,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.7.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.encoders.7.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.input_blocks.7.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.7.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.7.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.input_blocks.7.0.out_layers.0.bias"
     ]
@@ -492,7 +533,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.7.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.encoders.7.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.input_blocks.7.0.skip_connection.weight"]
+        "model.diffusion_model.input_blocks.7.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.encoders.7.0.residual_layer.bias"] = original_model[
         "model.diffusion_model.input_blocks.7.0.skip_connection.bias"
     ]
@@ -525,9 +567,11 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.ff.net.0.proj.bias"
     ]
     converted["diffusion"]["unet.encoders.7.1.linear_geglu_2.weight"] = original_model[
-        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.ff.net.2.weight"]
+        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.ff.net.2.weight"
+    ]
     converted["diffusion"]["unet.encoders.7.1.linear_geglu_2.bias"] = original_model[
-        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.ff.net.2.bias"]
+        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.ff.net.2.bias"
+    ]
     converted["diffusion"]["unet.encoders.7.1.attention_2.q_proj.weight"] = (
         original_model[
             "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.attn2.to_q.weight"
@@ -554,17 +598,23 @@ def load_from_standard_weights(
         ]
     )
     converted["diffusion"]["unet.encoders.7.1.layernorm_1.weight"] = original_model[
-        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.norm1.weight"]
+        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.norm1.weight"
+    ]
     converted["diffusion"]["unet.encoders.7.1.layernorm_1.bias"] = original_model[
-        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.norm1.bias"]
+        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.norm1.bias"
+    ]
     converted["diffusion"]["unet.encoders.7.1.layernorm_2.weight"] = original_model[
-        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.norm2.weight"]
+        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.norm2.weight"
+    ]
     converted["diffusion"]["unet.encoders.7.1.layernorm_2.bias"] = original_model[
-        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.norm2.bias"]
+        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.norm2.bias"
+    ]
     converted["diffusion"]["unet.encoders.7.1.layernorm_3.weight"] = original_model[
-        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.norm3.weight"]
+        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.norm3.weight"
+    ]
     converted["diffusion"]["unet.encoders.7.1.layernorm_3.bias"] = original_model[
-        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.norm3.bias"]
+        "model.diffusion_model.input_blocks.7.1.transformer_blocks.0.norm3.bias"
+    ]
     converted["diffusion"]["unet.encoders.7.1.conv_output.weight"] = original_model[
         "model.diffusion_model.input_blocks.7.1.proj_out.weight"
     ]
@@ -572,7 +622,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.7.1.proj_out.bias"
     ]
     converted["diffusion"]["unet.encoders.8.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.input_blocks.8.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.8.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.8.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.input_blocks.8.0.in_layers.0.bias"
     ]
@@ -589,7 +640,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.8.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.encoders.8.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.input_blocks.8.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.8.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.8.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.input_blocks.8.0.out_layers.0.bias"
     ]
@@ -628,9 +680,11 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.ff.net.0.proj.bias"
     ]
     converted["diffusion"]["unet.encoders.8.1.linear_geglu_2.weight"] = original_model[
-        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.ff.net.2.weight"]
+        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.ff.net.2.weight"
+    ]
     converted["diffusion"]["unet.encoders.8.1.linear_geglu_2.bias"] = original_model[
-        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.ff.net.2.bias"]
+        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.ff.net.2.bias"
+    ]
     converted["diffusion"]["unet.encoders.8.1.attention_2.q_proj.weight"] = (
         original_model[
             "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.attn2.to_q.weight"
@@ -657,17 +711,23 @@ def load_from_standard_weights(
         ]
     )
     converted["diffusion"]["unet.encoders.8.1.layernorm_1.weight"] = original_model[
-        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.norm1.weight"]
+        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.norm1.weight"
+    ]
     converted["diffusion"]["unet.encoders.8.1.layernorm_1.bias"] = original_model[
-        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.norm1.bias"]
+        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.norm1.bias"
+    ]
     converted["diffusion"]["unet.encoders.8.1.layernorm_2.weight"] = original_model[
-        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.norm2.weight"]
+        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.norm2.weight"
+    ]
     converted["diffusion"]["unet.encoders.8.1.layernorm_2.bias"] = original_model[
-        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.norm2.bias"]
+        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.norm2.bias"
+    ]
     converted["diffusion"]["unet.encoders.8.1.layernorm_3.weight"] = original_model[
-        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.norm3.weight"]
+        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.norm3.weight"
+    ]
     converted["diffusion"]["unet.encoders.8.1.layernorm_3.bias"] = original_model[
-        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.norm3.bias"]
+        "model.diffusion_model.input_blocks.8.1.transformer_blocks.0.norm3.bias"
+    ]
     converted["diffusion"]["unet.encoders.8.1.conv_output.weight"] = original_model[
         "model.diffusion_model.input_blocks.8.1.proj_out.weight"
     ]
@@ -681,9 +741,11 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.9.0.op.bias"
     ]
     converted["diffusion"]["unet.encoders.10.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.input_blocks.10.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.10.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.10.0.groupnorm_feature.bias"] = (
-        original_model["model.diffusion_model.input_blocks.10.0.in_layers.0.bias"])
+        original_model["model.diffusion_model.input_blocks.10.0.in_layers.0.bias"]
+    )
     converted["diffusion"]["unet.encoders.10.0.conv_feature.weight"] = original_model[
         "model.diffusion_model.input_blocks.10.0.in_layers.2.weight"
     ]
@@ -697,7 +759,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.10.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.encoders.10.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.input_blocks.10.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.10.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.10.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.input_blocks.10.0.out_layers.0.bias"
     ]
@@ -708,9 +771,11 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.10.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.encoders.11.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.input_blocks.11.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.11.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.11.0.groupnorm_feature.bias"] = (
-        original_model["model.diffusion_model.input_blocks.11.0.in_layers.0.bias"])
+        original_model["model.diffusion_model.input_blocks.11.0.in_layers.0.bias"]
+    )
     converted["diffusion"]["unet.encoders.11.0.conv_feature.weight"] = original_model[
         "model.diffusion_model.input_blocks.11.0.in_layers.2.weight"
     ]
@@ -724,7 +789,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.11.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.encoders.11.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.input_blocks.11.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.input_blocks.11.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.encoders.11.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.input_blocks.11.0.out_layers.0.bias"
     ]
@@ -735,7 +801,8 @@ def load_from_standard_weights(
         "model.diffusion_model.input_blocks.11.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.bottleneck.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.middle_block.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.middle_block.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.bottleneck.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.middle_block.0.in_layers.0.bias"
     ]
@@ -752,7 +819,8 @@ def load_from_standard_weights(
         "model.diffusion_model.middle_block.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.bottleneck.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.middle_block.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.middle_block.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.bottleneck.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.middle_block.0.out_layers.0.bias"
     ]
@@ -791,9 +859,11 @@ def load_from_standard_weights(
         "model.diffusion_model.middle_block.1.transformer_blocks.0.ff.net.0.proj.bias"
     ]
     converted["diffusion"]["unet.bottleneck.1.linear_geglu_2.weight"] = original_model[
-        "model.diffusion_model.middle_block.1.transformer_blocks.0.ff.net.2.weight"]
+        "model.diffusion_model.middle_block.1.transformer_blocks.0.ff.net.2.weight"
+    ]
     converted["diffusion"]["unet.bottleneck.1.linear_geglu_2.bias"] = original_model[
-        "model.diffusion_model.middle_block.1.transformer_blocks.0.ff.net.2.bias"]
+        "model.diffusion_model.middle_block.1.transformer_blocks.0.ff.net.2.bias"
+    ]
     converted["diffusion"]["unet.bottleneck.1.attention_2.q_proj.weight"] = (
         original_model[
             "model.diffusion_model.middle_block.1.transformer_blocks.0.attn2.to_q.weight"
@@ -820,17 +890,23 @@ def load_from_standard_weights(
         ]
     )
     converted["diffusion"]["unet.bottleneck.1.layernorm_1.weight"] = original_model[
-        "model.diffusion_model.middle_block.1.transformer_blocks.0.norm1.weight"]
+        "model.diffusion_model.middle_block.1.transformer_blocks.0.norm1.weight"
+    ]
     converted["diffusion"]["unet.bottleneck.1.layernorm_1.bias"] = original_model[
-        "model.diffusion_model.middle_block.1.transformer_blocks.0.norm1.bias"]
+        "model.diffusion_model.middle_block.1.transformer_blocks.0.norm1.bias"
+    ]
     converted["diffusion"]["unet.bottleneck.1.layernorm_2.weight"] = original_model[
-        "model.diffusion_model.middle_block.1.transformer_blocks.0.norm2.weight"]
+        "model.diffusion_model.middle_block.1.transformer_blocks.0.norm2.weight"
+    ]
     converted["diffusion"]["unet.bottleneck.1.layernorm_2.bias"] = original_model[
-        "model.diffusion_model.middle_block.1.transformer_blocks.0.norm2.bias"]
+        "model.diffusion_model.middle_block.1.transformer_blocks.0.norm2.bias"
+    ]
     converted["diffusion"]["unet.bottleneck.1.layernorm_3.weight"] = original_model[
-        "model.diffusion_model.middle_block.1.transformer_blocks.0.norm3.weight"]
+        "model.diffusion_model.middle_block.1.transformer_blocks.0.norm3.weight"
+    ]
     converted["diffusion"]["unet.bottleneck.1.layernorm_3.bias"] = original_model[
-        "model.diffusion_model.middle_block.1.transformer_blocks.0.norm3.bias"]
+        "model.diffusion_model.middle_block.1.transformer_blocks.0.norm3.bias"
+    ]
     converted["diffusion"]["unet.bottleneck.1.conv_output.weight"] = original_model[
         "model.diffusion_model.middle_block.1.proj_out.weight"
     ]
@@ -838,7 +914,8 @@ def load_from_standard_weights(
         "model.diffusion_model.middle_block.1.proj_out.bias"
     ]
     converted["diffusion"]["unet.bottleneck.2.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.middle_block.2.in_layers.0.weight"])
+        original_model["model.diffusion_model.middle_block.2.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.bottleneck.2.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.middle_block.2.in_layers.0.bias"
     ]
@@ -855,7 +932,8 @@ def load_from_standard_weights(
         "model.diffusion_model.middle_block.2.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.bottleneck.2.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.middle_block.2.out_layers.0.weight"])
+        original_model["model.diffusion_model.middle_block.2.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.bottleneck.2.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.middle_block.2.out_layers.0.bias"
     ]
@@ -866,7 +944,8 @@ def load_from_standard_weights(
         "model.diffusion_model.middle_block.2.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.decoders.0.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.output_blocks.0.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.0.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.0.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.output_blocks.0.0.in_layers.0.bias"
     ]
@@ -883,7 +962,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.0.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.decoders.0.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.output_blocks.0.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.0.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.0.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.0.0.out_layers.0.bias"
     ]
@@ -894,11 +974,14 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.0.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.decoders.0.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.output_blocks.0.0.skip_connection.weight"]
+        "model.diffusion_model.output_blocks.0.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.decoders.0.0.residual_layer.bias"] = original_model[
-        "model.diffusion_model.output_blocks.0.0.skip_connection.bias"]
+        "model.diffusion_model.output_blocks.0.0.skip_connection.bias"
+    ]
     converted["diffusion"]["unet.decoders.1.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.output_blocks.1.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.1.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.1.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.output_blocks.1.0.in_layers.0.bias"
     ]
@@ -915,7 +998,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.1.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.decoders.1.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.output_blocks.1.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.1.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.1.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.1.0.out_layers.0.bias"
     ]
@@ -926,11 +1010,14 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.1.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.decoders.1.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.output_blocks.1.0.skip_connection.weight"]
+        "model.diffusion_model.output_blocks.1.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.decoders.1.0.residual_layer.bias"] = original_model[
-        "model.diffusion_model.output_blocks.1.0.skip_connection.bias"]
+        "model.diffusion_model.output_blocks.1.0.skip_connection.bias"
+    ]
     converted["diffusion"]["unet.decoders.2.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.output_blocks.2.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.2.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.2.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.output_blocks.2.0.in_layers.0.bias"
     ]
@@ -947,7 +1034,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.2.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.decoders.2.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.output_blocks.2.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.2.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.2.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.2.0.out_layers.0.bias"
     ]
@@ -958,9 +1046,11 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.2.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.decoders.2.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.output_blocks.2.0.skip_connection.weight"]
+        "model.diffusion_model.output_blocks.2.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.decoders.2.0.residual_layer.bias"] = original_model[
-        "model.diffusion_model.output_blocks.2.0.skip_connection.bias"]
+        "model.diffusion_model.output_blocks.2.0.skip_connection.bias"
+    ]
     converted["diffusion"]["unet.decoders.2.1.conv.weight"] = original_model[
         "model.diffusion_model.output_blocks.2.1.conv.weight"
     ]
@@ -968,7 +1058,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.2.1.conv.bias"
     ]
     converted["diffusion"]["unet.decoders.3.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.output_blocks.3.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.3.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.3.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.output_blocks.3.0.in_layers.0.bias"
     ]
@@ -985,7 +1076,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.3.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.decoders.3.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.output_blocks.3.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.3.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.3.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.3.0.out_layers.0.bias"
     ]
@@ -996,9 +1088,11 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.3.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.decoders.3.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.output_blocks.3.0.skip_connection.weight"]
+        "model.diffusion_model.output_blocks.3.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.decoders.3.0.residual_layer.bias"] = original_model[
-        "model.diffusion_model.output_blocks.3.0.skip_connection.bias"]
+        "model.diffusion_model.output_blocks.3.0.skip_connection.bias"
+    ]
     converted["diffusion"]["unet.decoders.3.1.groupnorm.weight"] = original_model[
         "model.diffusion_model.output_blocks.3.1.norm.weight"
     ]
@@ -1083,7 +1177,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.3.1.proj_out.bias"
     ]
     converted["diffusion"]["unet.decoders.4.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.output_blocks.4.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.4.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.4.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.output_blocks.4.0.in_layers.0.bias"
     ]
@@ -1100,7 +1195,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.4.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.decoders.4.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.output_blocks.4.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.4.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.4.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.4.0.out_layers.0.bias"
     ]
@@ -1111,9 +1207,11 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.4.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.decoders.4.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.output_blocks.4.0.skip_connection.weight"]
+        "model.diffusion_model.output_blocks.4.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.decoders.4.0.residual_layer.bias"] = original_model[
-        "model.diffusion_model.output_blocks.4.0.skip_connection.bias"]
+        "model.diffusion_model.output_blocks.4.0.skip_connection.bias"
+    ]
     converted["diffusion"]["unet.decoders.4.1.groupnorm.weight"] = original_model[
         "model.diffusion_model.output_blocks.4.1.norm.weight"
     ]
@@ -1198,7 +1296,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.4.1.proj_out.bias"
     ]
     converted["diffusion"]["unet.decoders.5.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.output_blocks.5.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.5.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.5.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.output_blocks.5.0.in_layers.0.bias"
     ]
@@ -1215,7 +1314,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.5.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.decoders.5.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.output_blocks.5.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.5.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.5.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.5.0.out_layers.0.bias"
     ]
@@ -1226,9 +1326,11 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.5.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.decoders.5.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.output_blocks.5.0.skip_connection.weight"]
+        "model.diffusion_model.output_blocks.5.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.decoders.5.0.residual_layer.bias"] = original_model[
-        "model.diffusion_model.output_blocks.5.0.skip_connection.bias"]
+        "model.diffusion_model.output_blocks.5.0.skip_connection.bias"
+    ]
     converted["diffusion"]["unet.decoders.5.1.groupnorm.weight"] = original_model[
         "model.diffusion_model.output_blocks.5.1.norm.weight"
     ]
@@ -1319,7 +1421,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.5.2.conv.bias"
     ]
     converted["diffusion"]["unet.decoders.6.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.output_blocks.6.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.6.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.6.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.output_blocks.6.0.in_layers.0.bias"
     ]
@@ -1336,7 +1439,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.6.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.decoders.6.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.output_blocks.6.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.6.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.6.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.6.0.out_layers.0.bias"
     ]
@@ -1347,9 +1451,11 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.6.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.decoders.6.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.output_blocks.6.0.skip_connection.weight"]
+        "model.diffusion_model.output_blocks.6.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.decoders.6.0.residual_layer.bias"] = original_model[
-        "model.diffusion_model.output_blocks.6.0.skip_connection.bias"]
+        "model.diffusion_model.output_blocks.6.0.skip_connection.bias"
+    ]
     converted["diffusion"]["unet.decoders.6.1.groupnorm.weight"] = original_model[
         "model.diffusion_model.output_blocks.6.1.norm.weight"
     ]
@@ -1434,7 +1540,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.6.1.proj_out.bias"
     ]
     converted["diffusion"]["unet.decoders.7.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.output_blocks.7.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.7.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.7.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.output_blocks.7.0.in_layers.0.bias"
     ]
@@ -1451,7 +1558,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.7.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.decoders.7.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.output_blocks.7.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.7.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.7.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.7.0.out_layers.0.bias"
     ]
@@ -1462,9 +1570,11 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.7.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.decoders.7.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.output_blocks.7.0.skip_connection.weight"]
+        "model.diffusion_model.output_blocks.7.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.decoders.7.0.residual_layer.bias"] = original_model[
-        "model.diffusion_model.output_blocks.7.0.skip_connection.bias"]
+        "model.diffusion_model.output_blocks.7.0.skip_connection.bias"
+    ]
     converted["diffusion"]["unet.decoders.7.1.groupnorm.weight"] = original_model[
         "model.diffusion_model.output_blocks.7.1.norm.weight"
     ]
@@ -1549,7 +1659,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.7.1.proj_out.bias"
     ]
     converted["diffusion"]["unet.decoders.8.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.output_blocks.8.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.8.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.8.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.output_blocks.8.0.in_layers.0.bias"
     ]
@@ -1566,7 +1677,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.8.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.decoders.8.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.output_blocks.8.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.8.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.8.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.8.0.out_layers.0.bias"
     ]
@@ -1577,9 +1689,11 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.8.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.decoders.8.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.output_blocks.8.0.skip_connection.weight"]
+        "model.diffusion_model.output_blocks.8.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.decoders.8.0.residual_layer.bias"] = original_model[
-        "model.diffusion_model.output_blocks.8.0.skip_connection.bias"]
+        "model.diffusion_model.output_blocks.8.0.skip_connection.bias"
+    ]
     converted["diffusion"]["unet.decoders.8.1.groupnorm.weight"] = original_model[
         "model.diffusion_model.output_blocks.8.1.norm.weight"
     ]
@@ -1670,7 +1784,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.8.2.conv.bias"
     ]
     converted["diffusion"]["unet.decoders.9.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.output_blocks.9.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.9.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.9.0.groupnorm_feature.bias"] = original_model[
         "model.diffusion_model.output_blocks.9.0.in_layers.0.bias"
     ]
@@ -1687,7 +1802,8 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.9.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.decoders.9.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.output_blocks.9.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.9.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.9.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.9.0.out_layers.0.bias"
     ]
@@ -1698,9 +1814,11 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.9.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.decoders.9.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.output_blocks.9.0.skip_connection.weight"]
+        "model.diffusion_model.output_blocks.9.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.decoders.9.0.residual_layer.bias"] = original_model[
-        "model.diffusion_model.output_blocks.9.0.skip_connection.bias"]
+        "model.diffusion_model.output_blocks.9.0.skip_connection.bias"
+    ]
     converted["diffusion"]["unet.decoders.9.1.groupnorm.weight"] = original_model[
         "model.diffusion_model.output_blocks.9.1.norm.weight"
     ]
@@ -1785,9 +1903,11 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.9.1.proj_out.bias"
     ]
     converted["diffusion"]["unet.decoders.10.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.output_blocks.10.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.10.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.10.0.groupnorm_feature.bias"] = (
-        original_model["model.diffusion_model.output_blocks.10.0.in_layers.0.bias"])
+        original_model["model.diffusion_model.output_blocks.10.0.in_layers.0.bias"]
+    )
     converted["diffusion"]["unet.decoders.10.0.conv_feature.weight"] = original_model[
         "model.diffusion_model.output_blocks.10.0.in_layers.2.weight"
     ]
@@ -1795,24 +1915,29 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.10.0.in_layers.2.bias"
     ]
     converted["diffusion"]["unet.decoders.10.0.linear_time.weight"] = original_model[
-        "model.diffusion_model.output_blocks.10.0.emb_layers.1.weight"]
+        "model.diffusion_model.output_blocks.10.0.emb_layers.1.weight"
+    ]
     converted["diffusion"]["unet.decoders.10.0.linear_time.bias"] = original_model[
         "model.diffusion_model.output_blocks.10.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.decoders.10.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.output_blocks.10.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.10.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.10.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.10.0.out_layers.0.bias"
     ]
     converted["diffusion"]["unet.decoders.10.0.conv_merged.weight"] = original_model[
-        "model.diffusion_model.output_blocks.10.0.out_layers.3.weight"]
+        "model.diffusion_model.output_blocks.10.0.out_layers.3.weight"
+    ]
     converted["diffusion"]["unet.decoders.10.0.conv_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.10.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.decoders.10.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.output_blocks.10.0.skip_connection.weight"]
+        "model.diffusion_model.output_blocks.10.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.decoders.10.0.residual_layer.bias"] = original_model[
-        "model.diffusion_model.output_blocks.10.0.skip_connection.bias"]
+        "model.diffusion_model.output_blocks.10.0.skip_connection.bias"
+    ]
     converted["diffusion"]["unet.decoders.10.1.groupnorm.weight"] = original_model[
         "model.diffusion_model.output_blocks.10.1.norm.weight"
     ]
@@ -1897,9 +2022,11 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.10.1.proj_out.bias"
     ]
     converted["diffusion"]["unet.decoders.11.0.groupnorm_feature.weight"] = (
-        original_model["model.diffusion_model.output_blocks.11.0.in_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.11.0.in_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.11.0.groupnorm_feature.bias"] = (
-        original_model["model.diffusion_model.output_blocks.11.0.in_layers.0.bias"])
+        original_model["model.diffusion_model.output_blocks.11.0.in_layers.0.bias"]
+    )
     converted["diffusion"]["unet.decoders.11.0.conv_feature.weight"] = original_model[
         "model.diffusion_model.output_blocks.11.0.in_layers.2.weight"
     ]
@@ -1907,24 +2034,29 @@ def load_from_standard_weights(
         "model.diffusion_model.output_blocks.11.0.in_layers.2.bias"
     ]
     converted["diffusion"]["unet.decoders.11.0.linear_time.weight"] = original_model[
-        "model.diffusion_model.output_blocks.11.0.emb_layers.1.weight"]
+        "model.diffusion_model.output_blocks.11.0.emb_layers.1.weight"
+    ]
     converted["diffusion"]["unet.decoders.11.0.linear_time.bias"] = original_model[
         "model.diffusion_model.output_blocks.11.0.emb_layers.1.bias"
     ]
     converted["diffusion"]["unet.decoders.11.0.groupnorm_merged.weight"] = (
-        original_model["model.diffusion_model.output_blocks.11.0.out_layers.0.weight"])
+        original_model["model.diffusion_model.output_blocks.11.0.out_layers.0.weight"]
+    )
     converted["diffusion"]["unet.decoders.11.0.groupnorm_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.11.0.out_layers.0.bias"
     ]
     converted["diffusion"]["unet.decoders.11.0.conv_merged.weight"] = original_model[
-        "model.diffusion_model.output_blocks.11.0.out_layers.3.weight"]
+        "model.diffusion_model.output_blocks.11.0.out_layers.3.weight"
+    ]
     converted["diffusion"]["unet.decoders.11.0.conv_merged.bias"] = original_model[
         "model.diffusion_model.output_blocks.11.0.out_layers.3.bias"
     ]
     converted["diffusion"]["unet.decoders.11.0.residual_layer.weight"] = original_model[
-        "model.diffusion_model.output_blocks.11.0.skip_connection.weight"]
+        "model.diffusion_model.output_blocks.11.0.skip_connection.weight"
+    ]
     converted["diffusion"]["unet.decoders.11.0.residual_layer.bias"] = original_model[
-        "model.diffusion_model.output_blocks.11.0.skip_connection.bias"]
+        "model.diffusion_model.output_blocks.11.0.skip_connection.bias"
+    ]
     converted["diffusion"]["unet.decoders.11.1.groupnorm.weight"] = original_model[
         "model.diffusion_model.output_blocks.11.1.norm.weight"
     ]

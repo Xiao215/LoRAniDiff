@@ -37,12 +37,11 @@ def prompt_for_urls(image_dir, target_prefix):
             print("URL does not match the target prefix. Skipping.")
 
 
-def main():
+if __name__ == "__main__":
     BASE_DIR = os.path.dirname(
-        os.path.dirname(
-            os.path.dirname(
-                os.path.dirname(
-                    os.path.abspath(__file__)))))
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
+
     image_dir = os.path.join(BASE_DIR, "data/pixiv/images")
 
     # Specify the target prefix
@@ -56,7 +55,3 @@ def main():
     # After downloading, count the number of image files
     image_files = [f for f in os.listdir(image_dir) if f.endswith(".jpg")]
     print(f"Total images in '{image_dir}': {len(image_files)}")
-
-
-if __name__ == "__main__":
-    main()

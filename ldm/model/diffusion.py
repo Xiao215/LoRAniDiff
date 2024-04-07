@@ -90,8 +90,7 @@ class UNET_AttentionBlock(nn.Module):
         channels = n_head * n_embd
 
         self.groupnorm = nn.GroupNorm(32, channels, eps=1e-6)
-        self.conv_input = nn.Conv2d(
-            channels, channels, kernel_size=1, padding=0)
+        self.conv_input = nn.Conv2d(channels, channels, kernel_size=1, padding=0)
 
         self.layernorm_1 = nn.LayerNorm(channels)
         self.attention_1 = SelfAttention(n_head, channels, in_proj_bias=False)
@@ -103,8 +102,7 @@ class UNET_AttentionBlock(nn.Module):
         self.linear_geglu_1 = nn.Linear(channels, 4 * channels * 2)
         self.linear_geglu_2 = nn.Linear(4 * channels, channels)
 
-        self.conv_output = nn.Conv2d(
-            channels, channels, kernel_size=1, padding=0)
+        self.conv_output = nn.Conv2d(channels, channels, kernel_size=1, padding=0)
 
     def forward(self, x, context):
         # x: (Batch_Size, Features, Height, Width)
@@ -347,11 +345,7 @@ class UNET_OutputLayer(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
         self.groupnorm = nn.GroupNorm(32, in_channels)
-        self.conv = nn.Conv2d(
-            in_channels,
-            out_channels,
-            kernel_size=3,
-            padding=1)
+        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1)
 
     def forward(self, x):
         # x: (Batch_Size, 320, Height / 8, Width / 8)

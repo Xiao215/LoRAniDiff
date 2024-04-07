@@ -31,7 +31,7 @@ def resize_images_in_directory(directory, size):
             img = Image.open(img_path)
             img_resized = img.resize((size, size), Image.Resampling.LANCZOS)
             img_resized.save(img_path)
-            print(f"Resized: {img_file}")
+            print(f"Resized: {img_file} to size {size} x {size}.")
 
 
 if __name__ == "__main__":
@@ -46,12 +46,11 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+    base_dir = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
     download_dir = os.path.join(
-        os.path.dirname(
-            os.path.dirname(
-                os.path.dirname(
-                    os.path.dirname(
-                        os.path.abspath(__file__))))),
+        base_dir,
         "data/pixiv",
     )
 
@@ -63,7 +62,6 @@ if __name__ == "__main__":
 
     download_file(parquet_url, download_dir, "pixiv_image_caption.parquet")
 
-    print(args.resize)
     if args.resize is not None:
         resize_images_in_directory(
             os.path.join(download_dir, "pixiv_images"), args.resize
