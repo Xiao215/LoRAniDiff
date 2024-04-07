@@ -1,3 +1,8 @@
+![Python](https://img.shields.io/badge/python-3.10-blue.svg)
+![Repo Size](https://img.shields.io/github/repo-size/Sulstice/global-chem)
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FXiao215%2FLoRAniDiff&count_bg=%23BD7EF0&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
+
+
 # LoRAniDiff
 
 LoRAniDiff is an innovative image generation project leveraging the power of table diffusion models, fine-tuned with LoRA on a curated set of approximately 1,000 Pixiv images. This project combines the strengths of diffusion models with Low-Rank Adaptation (LoRA) to offer enhanced control and creativity in generating detailed and expressive imagery.
