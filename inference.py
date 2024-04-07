@@ -26,7 +26,7 @@ MODEL_FILE = "model_weight/v1-5-pruned-emaonly.ckpt"
 MODELS = model_loader.preload_models_from_standard_weights(MODEL_FILE, DEVICE)
 
 # Setup for text-to-image generation
-PROMPT = "give me an image of a cat with a hat"
+PROMPT = "A cat stretching on the floor, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution."
 UNCOND_PROMPT = ""  # Also known as negative prompt
 DO_CFG = True
 CFG_SCALE = 8  # Min: 1, Max: 14
@@ -41,7 +41,7 @@ STRENGTH = 0.9  # Control the deviation from the input image
 # Setup for the sampling process
 SAMPLER = "ddpm"
 NUM_INFERENCE_STEPS = 50
-SEED = 1337
+SEED = 42
 
 # Generate the image
 output_image = pipeline.generate(
@@ -62,6 +62,8 @@ output_image = pipeline.generate(
 
 # Process and save the output image
 image = Image.fromarray(output_image)
+SAVE_DIR = Path("image")  # Define the directory to save the image
+SAVE_DIR.mkdir(parents=True, exist_ok=True)
 SAVE_PATH = Path("image/output.jpg")
 image.save(SAVE_PATH)
 
