@@ -1,0 +1,35 @@
+name: Check Python Dependencies
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies from requirements.txt
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Check for missing packages
+      run: |
+        echo "Checking for missing packages..."
+        MISSING_PKGS=$(comm -23 <(sort requirements.txt) <(pip freeze | sort))
+        if [ -n "$MISSING_PKGS" ]; then
+          echo "Missing packages from requirements.txt:"
+          echo $MISSING_PKGS
+          exit 1
+        else
+          echo "All packages from requirements.txt are installed."
