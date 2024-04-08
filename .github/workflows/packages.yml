@@ -26,10 +26,14 @@ jobs:
     - name: Check for missing packages
       run: |
         echo "Checking for missing packages..."
-        MISSING_PKGS=$(comm -23 <(sort requirements.txt) <(pip freeze | sort))
+        pip freeze > installed.txt
+        sort requirements.txt > sorted_requirements.txt
+        sort installed.txt > sorted_installed.txt
+        MISSING_PKGS=$(comm -23 sorted_requirements.txt sorted_installed.txt)
         if [ -n "$MISSING_PKGS" ]; then
           echo "Missing packages from requirements.txt:"
-          echo $MISSING_PKGS
+          echo "$MISSING_PKGS"
           exit 1
         else
           echo "All packages from requirements.txt are installed."
+        fi
