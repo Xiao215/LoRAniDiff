@@ -40,10 +40,12 @@ class ImageCaptionDataset(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
 
-        img_name = self.metadata_df.iloc[idx]["image_name"]  # Fetch the image name
+        # Fetch the image name
+        img_name = self.metadata_df.iloc[idx]["image_name"]
         img_path = os.path.join(self.image_dir, img_name)  # Construct the image path
         image = Image.open(img_path).convert("RGB")  # Load and convert the image
-        caption = self.metadata_df.iloc[idx]["caption"]  # Fetch the associated caption
+        # Fetch the associated caption
+        caption = self.metadata_df.iloc[idx]["caption"]
 
         if self.transform:  # Apply transformation, if any
             image = self.transform(image)

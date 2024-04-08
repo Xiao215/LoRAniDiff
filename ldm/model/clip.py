@@ -16,7 +16,8 @@ class CLIPEmbedding(nn.Module):
         super().__init__()
 
         self.token_embedding = nn.Embedding(n_vocab, n_embd)
-        # A learnable weight matrix encodes the position information for each token
+        # A learnable weight matrix encodes the position information for each
+        # token
         self.position_embedding = nn.Parameter(torch.zeros((n_token, n_embd)))
 
     def forward(self, tokens):
@@ -58,7 +59,8 @@ class CLIPLayer(nn.Module):
         x += residue
 
         ### FEEDFORWARD LAYER ###
-        # Apply a feedforward layer where the hidden dimension is 4 times the embedding dimension.
+        # Apply a feedforward layer where the hidden dimension is 4 times the
+        # embedding dimension.
 
         residue = x
         # (Batch_Size, Seq_Len, Dim) -> (Batch_Size, Seq_Len, Dim)

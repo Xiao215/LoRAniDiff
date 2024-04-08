@@ -179,7 +179,8 @@ def _find_children(
     Returns all matching modules, along with the parent of those moduless and the
     names they are referenced by.
     """
-    # For each target find every linear_class module that isn't a child of a LoraInjectedLinear
+    # For each target find every linear_class module that isn't a child of a
+    # LoraInjectedLinear
     for parent in model.modules():
         for name, module in parent.named_children():
             if any([isinstance(module, _class) for _class in search_class]):
@@ -214,11 +215,13 @@ def _find_modules_v2(
         # this, incase you want to naively iterate over all modules.
         ancestors = [module for module in model.modules()]
 
-    # For each target find every linear_class module that isn't a child of a LoraInjectedLinear
+    # For each target find every linear_class module that isn't a child of a
+    # LoraInjectedLinear
     for ancestor in ancestors:
         for fullname, module in ancestor.named_modules():
             if any([isinstance(module, _class) for _class in search_class]):
-                # Find the direct parent if this is a descendant, not a child, of target
+                # Find the direct parent if this is a descendant, not a child,
+                # of target
                 *path, name = fullname.split(".")
                 parent = ancestor
                 while path:
@@ -268,7 +271,7 @@ def inject_trainable_lora(
     require_grad_params = []
     names = []
 
-    if loras != None:
+    if loras is not None:
         loras = torch.load(loras)
 
     for _module, name, _child_module in _find_modules(
@@ -298,7 +301,7 @@ def inject_trainable_lora(
         require_grad_params.append(_module._modules[name].lora_up.parameters())
         require_grad_params.append(_module._modules[name].lora_down.parameters())
 
-        if loras != None:
+        if loras is not None:
             _module._modules[name].lora_up.weight = loras.pop(0)
             _module._modules[name].lora_down.weight = loras.pop(0)
 
@@ -322,7 +325,7 @@ def inject_trainable_lora_extended(
     require_grad_params = []
     names = []
 
-    if loras != None:
+    if loras is not None:
         loras = torch.load(loras)
 
     for _module, name, _child_module in _find_modules(
@@ -369,7 +372,7 @@ def inject_trainable_lora_extended(
         require_grad_params.append(_module._modules[name].lora_up.parameters())
         require_grad_params.append(_module._modules[name].lora_down.parameters())
 
-        if loras != None:
+        if loras is not None:
             _module._modules[name].lora_up.weight = loras.pop(0)
             _module._modules[name].lora_down.weight = loras.pop(0)
 
@@ -553,7 +556,8 @@ def parse_safeloras(
     loras = {}
     metadata = safeloras.metadata()
 
-    get_name = lambda k: k.split(":")[0]
+    def get_name(k):
+        return k.split(":")[0]
 
     keys = list(safeloras.keys())
     keys.sort(key=get_name)
@@ -574,7 +578,8 @@ def parse_safeloras(
         # Extract the targets
         target = json.loads(info)
 
-        # Build the result lists - Python needs us to preallocate lists to insert into them
+        # Build the result lists - Python needs us to preallocate lists to
+        # insert into them
         module_keys = list(module_keys)
         ranks = [4] * (len(module_keys) // 2)
         weights = [None] * len(module_keys)
