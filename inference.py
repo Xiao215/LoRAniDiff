@@ -26,14 +26,14 @@ MODEL_FILE = "model_weight/v1-5-pruned-emaonly.ckpt"
 MODELS = model_loader.preload_models_from_standard_weights(MODEL_FILE, DEVICE)
 
 # Setup for text-to-image generation
-PROMPT = "A cat stretching on the floor, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution."
+PROMPT = "An anime girl with white hair and a black and gold outfit, soaring through the air with a bird on her shoulder, surrounded by autumn leaves and a wooden bridge., highly detailed, ultra sharp, 8k resolution"
 UNCOND_PROMPT = ""  # Also known as negative prompt
 DO_CFG = True
 CFG_SCALE = 8  # Min: 1, Max: 14
 
 # Setup for image-to-image generation
 INPUT_IMAGE = None
-IMAGE_PATH = "../images/dog.jpg"
+IMAGE_PATH = Path("image/image.png")
 # Uncomment the following line to enable image-to-image mode
 # INPUT_IMAGE = Image.open(IMAGE_PATH)
 STRENGTH = 0.9  # Control the deviation from the input image

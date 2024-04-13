@@ -1,5 +1,5 @@
 """
-This module implements the CLIP (Contrastive Language–Image Pre-training) model components used within
+This module implements the CLIP (Contrastive Language-Image Pre-training) model components used within
 the latent diffusion model framework. It includes classes for token embeddings, the CLIP model layers,
 and the CLIP model itself, structuring a simplified version of the CLIP architecture for embedding text
 inputs into a latent space.
