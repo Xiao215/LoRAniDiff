@@ -25,18 +25,22 @@ TOKENIZER = CLIPTokenizer(
 MODEL_FILE = "model_weight/v1-5-pruned-emaonly.ckpt"
 MODELS = model_loader.preload_models_from_standard_weights(MODEL_FILE, DEVICE)
 
+
+
+
 # Setup for text-to-image generation
-PROMPT = "An anime anime girl with purple hair, wearing a white dress and a straw hat, standing on a beach with the ocean in the background, smiling and waving, highly detailed, ultra sharp, 8k resolution."
+# PROMPT = "An anime girl with white hair and a black and gold outfit, soaring through the air with a bird on her shoulder, surrounded by autumn leaves and a wooden bridge, highly detailed, ultra sharp, 8k resolution"
+PROMPT = "Same dog but sitting on a beach, highly detailed, ultra sharp, 8k resolution"
 UNCOND_PROMPT = ""  # Also known as negative prompt
 DO_CFG = True
-CFG_SCALE = 5  # Min: 1, Max: 14
+CFG_SCALE = 8  # Min: 1, Max: 14
 
 # Setup for image-to-image generation
 INPUT_IMAGE = None
-IMAGE_PATH = Path("image/image.png")
+IMAGE_PATH = Path("image/image-image/dog_og.png")
 # Uncomment the following line to enable image-to-image mode
-# INPUT_IMAGE = Image.open(IMAGE_PATH)
-STRENGTH = 0.9  # Control the deviation from the input image
+INPUT_IMAGE = Image.open(IMAGE_PATH)
+STRENGTH = 0.6  # Control the deviation from the input image
 
 # Setup for the sampling process
 SAMPLER = "ddpm"

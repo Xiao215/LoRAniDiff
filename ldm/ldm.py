@@ -124,6 +124,12 @@ class LoRAniDiff(nn.Module):
 
         latents = None
         if images is not None:
+            input_image_tensor = LoRAniDiff.rescale(input_image_tensor, (0, 255), (-1, 1))
+            # (Height, Width, Channel) -> (Batch_Size, Height, Width, Channel)
+            input_image_tensor = input_image_tensor.unsqueeze(0)
+            # (Batch_Size, Height, Width, Channel) -> (Batch_Size, Channel, Height, Width)
+            input_image_tensor = input_image_tensor.permute(0, 3, 1, 2)
+
             encoder_noise = torch.randn(
                 latents_shape, generator=self.generator, device=self.device
             )
