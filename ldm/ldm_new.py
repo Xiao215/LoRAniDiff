@@ -39,9 +39,19 @@ class LoRAniDiff(nn.Module):
         else:
             self.generator.manual_seed(seed)
         self.tokenizer = tokenizer
+
+    def encode_images(self, images):
+        noise = torch.randn(16, 4, 64, 64, device=images.device)
+        #noise = torch.randn(images.size(0), 1, device=images.device)
+        latents = self.encoder(images, noise)
+        
+        return latents
     
     def forward(self, prompt, images=None, uncond_prompt=[""], do_cfg=True, cfg_scale=7.5, strength=0.8):
-        batch_size = len(prompt)
+        # ! Changed the batch_size for compute
+        #batch_size = len(prompt)
+        batch_size = 1
+
         # Assume that the unconditional prompt is the same for all samples in the batch, which is empty
         uncond_prompt = uncond_prompt * batch_size
         latents_shape = (batch_size, 4, self.LATENTS_HEIGHT, self.LATENTS_WIDTH)

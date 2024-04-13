@@ -10,6 +10,7 @@ import pandas as pd
 from PIL import Image
 from ldm.ldm_new import LoRAniDiff
 from torch.utils.data.dataset import random_split
+import pandas as pd # for path fixing
 
 
 
@@ -70,16 +71,24 @@ transform = transforms.Compose([
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
+<<<<<<< HEAD
 # * fix paths
 
 import pandas as pd
 
+=======
+# * Fix paths
+>>>>>>> f2d2195 (First attempt at training.)
 # Step 1: Read the Parquet file
 df = pd.read_parquet('./image/image_data.parquet')
 
 # Step 2: Update the 'Path' column
 def update_path(old_path):
+<<<<<<< HEAD
     return 'image/downloads/' + old_path.split('/')[-1]
+=======
+    return 'image/downloads32/' + old_path.split('/')[-1]
+>>>>>>> f2d2195 (First attempt at training.)
 
 df['Path'] = df['Path'].apply(update_path)
 
@@ -90,11 +99,14 @@ df.to_parquet('./image/image_data.parquet')
 # Check
 #print(df['Path']) 
 
+<<<<<<< HEAD
 
 
 
 
 
+=======
+>>>>>>> f2d2195 (First attempt at training.)
 dataset = TextCapsDataset(os.path.join(BASE_DIR, 'image/image_data.parquet'), transform=transform) # prev: 'data/textcaps/metadata.parquet'
 train_size = int(0.8 * len(dataset))
 val_size = len(dataset) - train_size
@@ -124,16 +136,28 @@ for epoch in range(epochs):
 
     #print(dataset.metadata_df['Name']) 
 
+<<<<<<< HEAD
     for i, batch in enumerate(train_loader):
         #print("printing all the batch keys....")
         #print(batch.keys())
 
         ####
+=======
+    for i, batch in tqdm(enumerate(train_loader)):
+        #print("printing all the batch keys....")
+        #print(batch.keys())
+
+        
+>>>>>>> f2d2195 (First attempt at training.)
         #print(batch['image'])
         images = batch['image'].to(device)
         captions = batch['caption']
 
+<<<<<<< HEAD
 
+=======
+        #print(captions)
+>>>>>>> f2d2195 (First attempt at training.)
         # * Trim the captions to just be assistant output
         # Iterate through all the captions and only keep the text after the substring ASSISTANT: 
         for i in range(len(captions)):
@@ -142,6 +166,7 @@ for epoch in range(epochs):
                 caption = caption[caption.index("ASSISTANT:") + len("ASSISTANT:"):]
             captions[i] = caption
             # if the number of character in captions[i] is less than 77, pad it with spaces to make it 77 characters long
+<<<<<<< HEAD
             if len(captions[i]) < 77:
                 captions[i] = captions[i] + " " * (77 - len(captions[i]))
             elif len(captions[i]) > 77:
@@ -152,9 +177,22 @@ for epoch in range(epochs):
 
 
         print(captions)
+=======
+            #if len(captions[i]) < 77:
+            #    captions[i] = captions[i] + " " * (77 - len(captions[i]))
+            if len(captions[i]) > 77:
+                captions[i] = captions[i][:77]
+
+        
+        # Should be fixed
+        #print(captions)
+>>>>>>> f2d2195 (First attempt at training.)
 
         uncond_prompt = [""] * len(captions)
-        output_conditioned, output_unconditioned, text_embeddings = model.forward(images, captions, uncond_prompt, tokenizer)
+
+        #print(uncond_prompt)
+
+        output_conditioned, output_unconditioned, text_embeddings = model.forward(captions, images, uncond_prompt)
 
         cfg_output = cfg_scale * (output_conditioned - output_unconditioned) + output_unconditioned
 
