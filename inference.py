@@ -1,16 +1,17 @@
 """
-This module performs inference using a pre-trained model to generate images from textual prompts.
-It supports both text-to-image and image-to-image generation, with options to configure the generation process.
+Module for performing inference with a model. It supports both text-to-image and image-to-image
+generation using a pre-trained model. Users can specify a prompt for text-to-image generation or
+provide an input image for image-to-image transformation, along with various parameters to control
+the inference process.
 """
 
 from pathlib import Path
 import torch
 from PIL import Image
 from transformers import CLIPTokenizer
-from ldm.utils import model_loader
-from ldm import pipeline
+from ldm.ldm import LoRAniDiff
 
-# Setup device for model inference
+# Setup the device for model execution
 DEVICE = "cpu"
 if torch.cuda.is_available():
     DEVICE = "cuda"
@@ -18,56 +19,38 @@ elif torch.has_mps() or torch.backends.mps.is_available():
     DEVICE = "mps"
 print(f"Using device: {DEVICE}")
 
-# Load tokenizer and models
+# Initialize the tokenizer
 TOKENIZER = CLIPTokenizer(
     "model_weight/vocab.json", merges_file="model_weight/merges.txt"
 )
-MODEL_FILE = "model_weight/v1-5-pruned-emaonly.ckpt"
-MODELS = model_loader.preload_models_from_standard_weights(MODEL_FILE, DEVICE)
 
+# Define file paths for the model weights
+PT_FILE = "model_weight/LoRAniDiff.pt"
 
+# Define the prompt and configuration for the generation process
+PROMPT = "A pink hair girl stretching on the floor, highly detailed, ultra sharp, cinematic, 100mm lens, 8k resolution."
+CFG_SCALE = 8  # Scale for conditional guidance, min: 1, max: 14
 
-
-# Setup for text-to-image generation
-# PROMPT = "An anime girl with white hair and a black and gold outfit, soaring through the air with a bird on her shoulder, surrounded by autumn leaves and a wooden bridge, highly detailed, ultra sharp, 8k resolution"
-PROMPT = "Same dog but sitting on a beach, highly detailed, ultra sharp, 8k resolution"
-UNCOND_PROMPT = ""  # Also known as negative prompt
-DO_CFG = True
-CFG_SCALE = 8  # Min: 1, Max: 14
-
-# Setup for image-to-image generation
+# Image to image configuration
 INPUT_IMAGE = None
-IMAGE_PATH = Path("image/image-image/dog_og.png")
-# Uncomment the following line to enable image-to-image mode
-INPUT_IMAGE = Image.open(IMAGE_PATH)
-STRENGTH = 0.6  # Control the deviation from the input image
+# Uncomment the following lines to enable image-to-image mode
+# IMAGE_PATH = "../images/dog.jpg"
+# INPUT_IMAGE = Image.open(IMAGE_PATH)
 
-# Setup for the sampling process
-SAMPLER = "ddpm"
-NUM_INFERENCE_STEPS = 50
-SEED = 42
+# Define the strength for the image-to-image transformation
+STRENGTH = 0.9
 
-# Generate the image
-output_image = pipeline.generate(
-    prompt=PROMPT,
-    uncond_prompt=UNCOND_PROMPT,
-    input_image=INPUT_IMAGE,
-    strength=STRENGTH,
-    do_cfg=DO_CFG,
-    cfg_scale=CFG_SCALE,
-    sampler_name=SAMPLER,
-    n_inference_steps=NUM_INFERENCE_STEPS,
-    seed=SEED,
-    models=MODELS,
-    device=DEVICE,
-    idle_device="cpu",
-    tokenizer=TOKENIZER,
+# Load the model and set its configuration
+model = LoRAniDiff(device=DEVICE, seed=42, tokenizer=TOKENIZER)
+model.load_state_dict(torch.load(PT_FILE, map_location=DEVICE))
+
+# Perform the generation
+output_image = model.generate(
+    caption=PROMPT, input_image=INPUT_IMAGE, strength=STRENGTH, cfg_scale=CFG_SCALE
 )
-# Process and save the output image
-image = Image.fromarray(output_image)
-SAVE_DIR = Path("image")  # Define the directory to save the image
-SAVE_DIR.mkdir(parents=True, exist_ok=True)
+
+# Save the generated image
 SAVE_PATH = Path("image/output.jpg")
-image.save(SAVE_PATH)
+output_image.save(SAVE_PATH)
 
 print(f"Image saved to {SAVE_PATH}")
